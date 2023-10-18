@@ -25,7 +25,7 @@ public class ClassTasksManager : MonoBehaviour
     public Button closeDeletePanel;
     public Button confirmDelete;
     
-    private Task _delTask;
+    private Task _delEditTask;
     private bool _creatingNew;
     
 
@@ -48,13 +48,14 @@ public class ClassTasksManager : MonoBehaviour
         classGroupsButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassGroups"));
         
         addTask.onClick.AddListener(() => {
-            
+            _creatingNew = true;
             //TODO zobraz panel na vytvaranie a upravu ulohy
         });
         
         editButton.onClick.AddListener(() =>
         {
             _creatingNew = false;
+            editPanel.SetActive(false);
             //TODO zobraz panel na vytvaranie a upravu ulohy
         });
         
@@ -63,14 +64,22 @@ public class ClassTasksManager : MonoBehaviour
             editPanel.SetActive(false);
         });
         
+        editPanel.GetComponent<Button>().onClick.AddListener(() => {
+            editPanel.SetActive(false);
+        });
+        
         deleteButton.onClick.AddListener(() =>
         {
-            _delTask = APIHelper.GetTask(Constants.TaskId);
+            _delEditTask = APIHelper.GetTask(Constants.TaskId);
             deletePanel.SetActive(true);
-            deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = "Úloha " + _delTask.name + "bude nevratne odstránená";
+            deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = Constants.GetDeleteTaskString(_delEditTask);
         });
         
         closeDeletePanel.onClick.AddListener(() => {
+            deletePanel.SetActive(false);
+        });
+        
+        deletePanel.GetComponent<Button>().onClick.AddListener(() => {
             deletePanel.SetActive(false);
         });
         

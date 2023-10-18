@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DbClasses;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,12 +26,15 @@ public class ClassGroupsManager : MonoBehaviour
     public Button closeGroupPanel;
     public Button saveButton;
     public InputField groupName;
+    public GridLayoutGroup studentsInGoupList;
+    public GridLayoutGroup studentsNotInGoupList;
+    public GameObject prefabStudentListItem;
     
     public GameObject deletePanel;
     public Button closeDeletePanel;
     public Button confirmDelete;
 
-    private Group _delGroup;
+    private Group _delEditGroup;
     private bool _creatingNew;
     
     //TODO pridavanie ziakov do skupin, prezeranie si ziakov v skupine
@@ -46,23 +50,27 @@ public class ClassGroupsManager : MonoBehaviour
         });
         
         float width = canvas.GetComponent<RectTransform>().rect.width;
-        Vector2 newGroupSize = new Vector2((width - 100) / 2, (width - 100) / 2);
-        groupsLayout.GetComponent<GridLayoutGroup>().cellSize = newGroupSize;
+        float width2 = (width - 100) / 2;
+        groupsLayout.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, width2+80);
+        studentsInGoupList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
+        studentsNotInGoupList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
         
         classTasksButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassTasks"));
         classStudentsButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassStudents"));
 
         addGroup.onClick.AddListener(() => {
-            saveButton.transform.Find("Text").GetComponent<Text>().text = "Vytvor";
             _creatingNew = true;
-            groupPanel.SetActive(true);
+            saveButton.transform.Find("Text").GetComponent<Text>().text = Constants.SaveButtonTextCreate;
+            SetActiveGroupPanel();
         });
         
         editButton.onClick.AddListener(() =>
         {
             _creatingNew = false;
-            saveButton.transform.Find("Text").GetComponent<Text>().text = "Uprav";
-            groupPanel.SetActive(true);
+            saveButton.transform.Find("Text").GetComponent<Text>().text = Constants.SaveButtonTextUpdate;
+            groupName.text = _delEditGroup.name;
+            SetActiveGroupPanel();
+            editPanel.SetActive(false);
         });
         
         saveButton.onClick.AddListener(() =>
@@ -92,14 +100,23 @@ public class ClassGroupsManager : MonoBehaviour
             editPanel.SetActive(false);
         });
         
+        editPanel.GetComponent<Button>().onClick.AddListener(() => {
+            editPanel.SetActive(false);
+        });
+        
         deleteButton.onClick.AddListener(() =>
         {
-            _delGroup = APIHelper.GetGroup(Constants.GroupId);
+            _delEditGroup = APIHelper.GetGroup(Constants.GroupId);
             deletePanel.SetActive(true);
-            deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = "Naozaj chcete vymazat triedu " + _delGroup.name + "?";
+            editPanel.SetActive(false);
+            deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = Constants.GetDeleteGroupString(_delEditGroup);
         });
         
         closeDeletePanel.onClick.AddListener(() => {
+            deletePanel.SetActive(false);
+        });
+        
+        deletePanel.GetComponent<Button>().onClick.AddListener(() => {
             deletePanel.SetActive(false);
         });
         
@@ -109,6 +126,23 @@ public class ClassGroupsManager : MonoBehaviour
             //TODO zmenit? mam nanovo nacitat? zatial ok
             SceneManager.LoadScene("Scenes/ClassGroups");
         });
+    }
+
+    private void SetActiveGroupPanel()
+    {
+        groupPanel.SetActive(true);
+        var studentsInGroup = APIHelper.GetStudentsInGroup(Constants.GroupId);
+        var studentsNotInGroup = APIHelper.GetStudentsNotInGroup(Constants.GroupId, Constants.ClassroomId);
+        AddStudentsToGrid(studentsInGroup, true);
+        AddStudentsToGrid(studentsNotInGroup, false);
+        var studentsCount = studentsInGroup.Count;
+        var studentsCount2 = studentsNotInGroup.Count;
+        var height = (studentsCount + 1) / 2;
+        var height2 = (studentsCount2 + 1) / 2;
+        RectTransform rt = studentsInGoupList.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2 (rt.sizeDelta.x, height);
+        RectTransform rt2 = studentsNotInGoupList.GetComponent<RectTransform>();
+        rt2.sizeDelta = new Vector2 (rt2.sizeDelta.x, height2);
     }
 
     private void AddGroupsToGrid(List<Group> list)
@@ -129,10 +163,26 @@ public class ClassGroupsManager : MonoBehaviour
         var edit = g.transform.Find("Edit").GetComponent<Button>();
         edit.onClick.AddListener(() =>
         {
+            _delEditGroup = group;
             Constants.GroupId = group.id;
             editPanel.SetActive(true);
         });
         g.GetComponentInChildren<Text>().text  = (group.name);
+    }
+    
+    private void AddStudentsToGrid(List<Student> list, Boolean isInGroup)
+    {
+        if (isInGroup) foreach (var student in list) AddStudentToGrid(student); 
+        else foreach (var student in list) AddStudentToGrid(student); 
+    }
+    
+    private void AddStudentToGrid(Student student)
+    {
+        var studentItem = Instantiate(prefabStudentListItem, grid.transform);
+        studentItem.transform.Find("Close").GetComponent<Button>().onClick.AddListener(() => {
+            //TODO odstrani ziaka zo skupiny alebo prida
+        });
+        studentItem.transform.Find("Text").GetComponent<Text>().text  = (student.name + " " + student.lastName);
     }
     
 }

@@ -36,6 +36,10 @@ public class LoginManager : MonoBehaviour
             forgottenPasswordPanel.SetActive(false);
         });
         
+        forgottenPasswordPanel.GetComponent<Button>().onClick.AddListener(() => {
+            forgottenPasswordPanel.SetActive(false);
+        });
+
         forgottenPasswordButton.onClick.AddListener(() => {
             forgottenPasswordPanel.SetActive(true);
         });

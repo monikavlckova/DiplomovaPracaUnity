@@ -123,6 +123,11 @@ public static class APIHelper
     {
         return JsonConvert.DeserializeObject<List<Student>>(GetDataObjectJson(Constants.GroupGetStudentsEndpointUrl + "/" + id));
     }
+    
+    public static List<Student> GetStudentsNotInGroup(int groupId, int classroomId) 
+    {
+        return JsonConvert.DeserializeObject<List<Student>>(GetDataObjectJson(Constants.GroupGetStudentsEndpointUrl + "/" + groupId + "/" + classroomId));
+    }
 
     public static List<Task> GetGroupsTasks()
     {

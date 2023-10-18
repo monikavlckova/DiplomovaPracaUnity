@@ -10,6 +10,7 @@ public class ClassesManager : MonoBehaviour
     public VerticalLayoutGroup classroomsLayout;
     public Button prefabItem;
     public Button addClass;
+    public Button profile;
     
     public GameObject editPanel;
     public Button closeEditPanel;
@@ -39,16 +40,22 @@ public class ClassesManager : MonoBehaviour
         addClass.onClick.AddListener(() =>
         {
             _creatingNew = true;
-            saveButton.transform.Find("Text").GetComponent<Text>().text = "Vytvor";
+            saveButton.transform.Find("Text").GetComponent<Text>().text = Constants.SaveButtonTextCreate;
             classPanel.SetActive(true);
+        });
+        
+        profile.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene("Scenes/Profile");
         });
 
         editButton.onClick.AddListener(() =>
         {
             _creatingNew = false;
-            saveButton.transform.Find("Text").GetComponent<Text>().text = "Uprav";
-            className.transform.Find("Text").GetComponent<Text>().text = _delEditClassroom.name;
+            saveButton.transform.Find("Text").GetComponent<Text>().text = Constants.SaveButtonTextUpdate;
+            className.text = _delEditClassroom.name;
             classPanel.SetActive(true);
+            editPanel.SetActive(false);
         });
         
         saveButton.onClick.AddListener(() =>
@@ -74,7 +81,15 @@ public class ClassesManager : MonoBehaviour
             classPanel.SetActive(false);
         });
         
+        classPanel.GetComponent<Button>().onClick.AddListener(() => {
+            classPanel.SetActive(false);
+        });
+        
         closeEditPanel.onClick.AddListener(() => {
+            editPanel.SetActive(false);
+        });
+        
+        editPanel.GetComponent<Button>().onClick.AddListener(() => {
             editPanel.SetActive(false);
         });
         
@@ -82,10 +97,15 @@ public class ClassesManager : MonoBehaviour
         {
             _delEditClassroom = APIHelper.GetClassroom(Constants.ClassroomId);
             deletePanel.SetActive(true);
-            deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = "Naozaj chcete vymazat triedu " + _delEditClassroom.name + "?";
+            editPanel.SetActive(false);
+            deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = Constants.GetDeleteClassroomString(_delEditClassroom);
         });
         
         closeDeletePanel.onClick.AddListener(() => {
+            deletePanel.SetActive(false);
+        });
+        
+        deletePanel.GetComponent<Button>().onClick.AddListener(() => {
             deletePanel.SetActive(false);
         });
         

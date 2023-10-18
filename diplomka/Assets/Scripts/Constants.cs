@@ -1,4 +1,6 @@
-﻿public static class Constants
+﻿using DbClasses;
+
+public static class Constants
 {
     private const string ServerUrl = "https://localhost:7193/api";
 
@@ -21,7 +23,15 @@
     public static readonly string TeacherGetClassroomsEndpointUrl = ServerUrl + "/Teachers/getAllClassrooms";
     public static readonly string UsersEndpointUrl = ServerUrl + "/Users";
 
-    public static int ClassroomId {get; set; }
+    public static readonly string SaveButtonTextUpdate = "Uložiť";
+    public static readonly string SaveButtonTextCreate = "Vytvoriť";
+    
+    public static string GetDeleteClassroomString(Classroom classroom){return "Odstrániť triedu " + classroom.name + "?";}
+    public static string GetDeleteStudentString(Student student){return "Odstrániť žiaka " + student.name + " " + student.lastName + "?";}
+    public static string GetDeleteGroupString(Group group){return "Odstrániť skupinu " + group.name + "?";}
+    public static string GetDeleteTaskString(Task task){return "Odstrániť úlohu " + task.name + "?";}
+
+    public static int ClassroomId = 1;
     public static int GroupId {get; set; }
     public static int StudentId {get; set; }
     public static int TaskId {get; set; }
