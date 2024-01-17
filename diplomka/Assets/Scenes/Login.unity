@@ -691,7 +691,12 @@ PrefabInstance:
     - target: {fileID: 3599132361604815936, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_Text
-      value: heslo
+      value: Heslo
+      objectReference: {fileID: 0}
+    - target: {fileID: 8030025393523623555, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Text
+      value: Heslo
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 39dc4c682832bba479d40d8e2c8ca894, type: 3}
@@ -912,6 +917,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3599132361604815936, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Text
+      value: Login
+      objectReference: {fileID: 0}
+    - target: {fileID: 8030025393523623555, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Text
+      value: Login
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 39dc4c682832bba479d40d8e2c8ca894, type: 3}
@@ -1695,6 +1710,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1180843712}
     m_Modifications:
+    - target: {fileID: 2886893206061562735, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943818, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_Name
@@ -1806,6 +1826,11 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3599132361604815936, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Text
+      value: e-mail
+      objectReference: {fileID: 0}
+    - target: {fileID: 8030025393523623555, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_Text
       value: e-mail

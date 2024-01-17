@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class StudentManager : MonoBehaviour
+public class GroupManager : MonoBehaviour
 {
     public Text headline;
     public GridLayoutGroup layout;
@@ -13,14 +13,13 @@ public class StudentManager : MonoBehaviour
 
     private void Start()
     {
-        //var student = APIHelper.GetStudent(Constants.StudentId);
-        var student = Constants.Student;
-        var tasks = APIHelper.GetStudentsTasks(Constants.Student.id);
+        var group = Constants.Group;
+        var tasks = APIHelper.GetGroupsTasks(Constants.Group.id);
         AddTasksToGrid(tasks);
-        headline.text = student.name + " " + student.lastName;
+        headline.text = group.name;
         
         back.onClick.AddListener(() => {
-            SceneManager.LoadScene("Scenes/ClassStudents"); 
+            SceneManager.LoadScene("Scenes/ClassGroups"); 
         });
     }
 
@@ -32,7 +31,7 @@ public class StudentManager : MonoBehaviour
             s.onClick.AddListener(() => 
             {
                 Constants.Taskk = task;
-                Constants.LastSceneName = "Student";
+                Constants.LastSceneName = "Group";
                 SceneManager.LoadScene("Scenes/Task"); 
             });
             s.GetComponentInChildren<Text>().text  = (task.name);

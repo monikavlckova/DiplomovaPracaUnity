@@ -30,7 +30,7 @@ public class ClassesManager : MonoBehaviour
     private bool _creatingNew;
     private void Start()
     {
-        var classes = APIHelper.GetTeachersClassrooms(Constants.UserId); 
+        var classes = APIHelper.GetTeachersClassrooms(Constants.User.id); 
         AddClassroomsToGrid(classes);
         
         logoutButton.onClick.AddListener(() => {
@@ -46,6 +46,7 @@ public class ClassesManager : MonoBehaviour
         
         profile.onClick.AddListener(() =>
         {
+            Constants.LastSceneName = "Classes";
             SceneManager.LoadScene("Scenes/Profile");
         });
 
@@ -60,20 +61,22 @@ public class ClassesManager : MonoBehaviour
         
         saveButton.onClick.AddListener(() =>
         {
-            //TODO skontroluj vstup
+            if (!AreValidValues()) return;
+           
             var classroom = new Classroom
             {
                 name = className.text,
-                teacherId = Constants.UserId
+                teacherId = Constants.User.id
             };
             var method = "PUT";
             if (_creatingNew == false)
             {
-                classroom.id = Constants.ClassroomId;
+                classroom.id = Constants.Classroom.id;
                 method = "POST";
             }
             APIHelper.CreateUpdateClassroom(classroom, method);
             classPanel.SetActive(false);
+            //TODO zmenit? mam nanovo nacitat? zatial ok
             SceneManager.LoadScene("Scenes/Classes");
         });
         
@@ -95,7 +98,7 @@ public class ClassesManager : MonoBehaviour
         
         deleteButton.onClick.AddListener(() =>
         {
-            _delEditClassroom = APIHelper.GetClassroom(Constants.ClassroomId);
+            _delEditClassroom = Constants.Classroom;
             deletePanel.SetActive(true);
             editPanel.SetActive(false);
             deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = Constants.GetDeleteClassroomString(_delEditClassroom);
@@ -111,14 +114,47 @@ public class ClassesManager : MonoBehaviour
         
         confirmDelete.onClick.AddListener(() =>
         {
-            APIHelper.DeleteClassroom(Constants.ClassroomId);
+            SwitchClassroomTasksToStudentTasks();
+            SwitchGroupTasksToStudentTasks();
+            APIHelper.DeleteClassroom(Constants.Classroom.id);
             //TODO zmenit? mam nanovo nacitat? zatial ok
             SceneManager.LoadScene("Scenes/Classes");
         });
     }
 
+    private static void SwitchClassroomTasksToStudentTasks()
+    {
+        var students = APIHelper.GetStudentsInClassroom(Constants.Classroom.id);
+        var classroomTasks = APIHelper.GetTasksInClassroom(Constants.Classroom.id);
+        foreach (var student in students) {
+            foreach (var task in classroomTasks) {
+                Debug.Log(student.id + " class " + task.id);
+                var studentTask = new StudentTask { studentId = student.id, taskkId = task.id };
+                APIHelper.CreateUpdateStudentTask(studentTask);
+            }
+        }
+    }
+    
+    private static void SwitchGroupTasksToStudentTasks()
+    {
+        var groups = APIHelper.GetGroupsInClassroom(Constants.Classroom.id);
+        foreach (var group in groups) {
+            var studentsInGroup = APIHelper.GetStudentsInGroup(group.id);
+            var groupTasks = APIHelper.GetGroupsTasks(group.id);
+            foreach (var student in studentsInGroup) {
+                foreach (var task in groupTasks) {
+                    Debug.Log(student.id + " group " + task.id);
+                    var studentTask = new StudentTask { studentId = student.id, taskkId = task.id };
+                    APIHelper.CreateUpdateStudentTask(studentTask);
+                }
+            }
+        }
+    }
+
     private void AddClassroomsToGrid(List<Classroom> list)
     {
+        if (list  == null) return;
+        
         foreach (var classroom in list)
         {
             AddClassroomToGrid(classroom);
@@ -129,16 +165,33 @@ public class ClassesManager : MonoBehaviour
     {
         var c = Instantiate(prefabItem, classroomsLayout.transform);
         c.onClick.AddListener(() => {
-            Constants.ClassroomId = classroom.id;
+            Constants.Classroom = classroom;
+            Constants.LastSceneName = "Classes";
             SceneManager.LoadScene("Scenes/ClassStudents"); 
         });
         var edit = c.transform.Find("Edit").GetComponent<Button>();
         edit.onClick.AddListener(() =>
         {
             _delEditClassroom = classroom;
-            Constants.ClassroomId = classroom.id;
+            Constants.Classroom = classroom;
             editPanel.SetActive(true);
         });
         c.GetComponentInChildren<Text>().text  = (classroom.name);
+    }
+    
+    private bool AreValidValues()
+    {
+        var nameUnderline = className.transform.Find("underline");
+        nameUnderline.gameObject.SetActive(false);
+        var valid = true;
+
+        if (className.text.Length < Constants.MinimalClassroomNameLength)
+        {
+            nameUnderline.gameObject.SetActive(true);
+            nameUnderline.GetComponent<Text>().text = Constants.WrongClassroomNameFormatMessage;
+            valid = false;
+        }
+        
+        return valid;
     }
 }

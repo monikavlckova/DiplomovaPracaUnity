@@ -12,7 +12,7 @@ public class TaskManager : MonoBehaviour
         Screen.orientation = ScreenOrientation.LandscapeLeft;
         
         back.onClick.AddListener(() => {
-            SceneManager.LoadScene("Scenes/Student"); 
+            SceneManager.LoadScene("Scenes/"+ Constants.LastSceneName); 
         });
         
     }

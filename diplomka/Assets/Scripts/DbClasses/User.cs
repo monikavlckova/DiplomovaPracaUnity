@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DbClasses
+﻿/*namespace DbClasses
 {
     public class User
     {
@@ -9,7 +7,6 @@ namespace DbClasses
         public string lastName;
         public string userName;
         public string password;
-
     }
 
-}
+}*/

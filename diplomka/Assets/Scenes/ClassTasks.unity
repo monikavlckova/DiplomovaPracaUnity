@@ -1791,7 +1791,8 @@ MonoBehaviour:
   className: {fileID: 525440973880676561}
   tasksLayout: {fileID: 1205470120}
   canvas: {fileID: 1293627044}
-  prefabItem: {fileID: 0}
+  prefabItem: {fileID: 4669540424797286183, guid: e092e9c5223c6be43b0646f1339705a5,
+    type: 3}
   backButton: {fileID: 7266568218505205941}
   addTask: {fileID: 504219223}
   classStudentsButton: {fileID: 725431292}

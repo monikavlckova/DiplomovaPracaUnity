@@ -2,10 +2,11 @@
 
 namespace DbClasses
 {
-    public class Task
+    public class Taskk
     {
         public int id;
         public string name;
         public string text;
+        public string imagePath;
     }
 }

@@ -25,15 +25,16 @@ public class ClassTasksManager : MonoBehaviour
     public Button closeDeletePanel;
     public Button confirmDelete;
     
-    private Task _delEditTask;
+    private Taskk _delEditTaskk;
     private bool _creatingNew;
     
 
     private void Start()
     {
-        var tasks = APIHelper.GetTasksInClassroom(Constants.ClassroomId);
+        var tasks = APIHelper.GetTasksInClassroom(Constants.Classroom.id);
         AddTasksToGrid(tasks);
-        var classroom = APIHelper.GetClassroom(Constants.ClassroomId);
+        //var classroom = APIHelper.GetClassroom(Constants.ClassroomId);
+        var classroom = Constants.Classroom;
         className.text = classroom.name;
         
         backButton.onClick.AddListener(() => {
@@ -41,7 +42,7 @@ public class ClassTasksManager : MonoBehaviour
         });
         
         float width = canvas.GetComponent<RectTransform>().rect.width;
-        Vector2 newTaskSize = new Vector2((width - 100) / 2, (width - 100) / 2);
+        Vector2 newTaskSize = new Vector2(((width - 100) / 2), ((width - 100) / 2));
         tasksLayout.GetComponent<GridLayoutGroup>().cellSize = newTaskSize;
         
         classStudentsButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassStudents"));
@@ -70,9 +71,10 @@ public class ClassTasksManager : MonoBehaviour
         
         deleteButton.onClick.AddListener(() =>
         {
-            _delEditTask = APIHelper.GetTask(Constants.TaskId);
+            //_delEditTaskk = APIHelper.GetTask(Constants.TaskId);
+            _delEditTaskk = Constants.Taskk;
             deletePanel.SetActive(true);
-            deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = Constants.GetDeleteTaskString(_delEditTask);
+            deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = Constants.GetDeleteTaskString(_delEditTaskk);
         });
         
         closeDeletePanel.onClick.AddListener(() => {
@@ -85,13 +87,13 @@ public class ClassTasksManager : MonoBehaviour
         
         confirmDelete.onClick.AddListener(() =>
         {
-            APIHelper.DeleteTask(Constants.TaskId);
+            APIHelper.DeleteTask(Constants.Taskk.id);
             //TODO zmenit? mam nanovo nacitat? zatial ok
             SceneManager.LoadScene("Scenes/ClassTasks");
         });
     }
 
-    private void AddTasksToGrid(List<Task> list)
+    private void AddTasksToGrid(List<Taskk> list)
     {
         foreach (var task in list)
         {
@@ -99,11 +101,12 @@ public class ClassTasksManager : MonoBehaviour
         }
     }
 
-    private void AddTaskToGrid(Task task)
+    private void AddTaskToGrid(Taskk taskk)
     {
         var t = Instantiate(prefabItem, tasksLayout.transform);
         t.onClick.AddListener(() => {
-            Constants.StudentId = task.id;
+            Constants.Taskk = taskk;
+            Constants.LastSceneName = "ClassTasks";
             SceneManager.LoadScene("Scenes/Task"); 
         });
         var edit = t.transform.Find("Edit").GetComponent<Button>();
@@ -111,6 +114,6 @@ public class ClassTasksManager : MonoBehaviour
         {
             //TODO edit panel
         });
-        t.GetComponentInChildren<Text>().text  = (task.name);
+        t.GetComponentInChildren<Text>().text  = (taskk.name);
     }
 }

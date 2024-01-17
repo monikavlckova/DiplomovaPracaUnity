@@ -42,12 +42,12 @@ public class ClassStudentsManager : MonoBehaviour
     private List<Classroom> classrooms;
     private void Start()
     {
-        var students = APIHelper.GetStudentsInClassroom(Constants.ClassroomId);
+        var students = APIHelper.GetStudentsInClassroom(Constants.Classroom.id);
         AddStudentsToGrid(students);
-        var classroom = APIHelper.GetClassroom(Constants.ClassroomId);
+        var classroom = Constants.Classroom;
         className.text = classroom.name;
         
-        classrooms = APIHelper.GetTeachersClassrooms(Constants.UserId);
+        classrooms = APIHelper.GetTeachersClassrooms(Constants.User.id);
         dropdown.options.Clear();
         foreach (var c in classrooms)
         {
@@ -70,6 +70,10 @@ public class ClassStudentsManager : MonoBehaviour
             dropdown.gameObject.SetActive(false);
             saveButton.transform.Find("Text").GetComponent<Text>().text = Constants.SaveButtonTextCreate;
             studentPanel.SetActive(true);
+            studentName.text = "";
+            studentLastName.text = "";
+            studentUserName.text = "";
+            studentPassword.text = "";
         });
         
         editButton.onClick.AddListener(() =>
@@ -88,22 +92,27 @@ public class ClassStudentsManager : MonoBehaviour
         
         saveButton.onClick.AddListener(() =>
         {
-            //TODO skontroluj vstup
+            if(!AreValidValues()) return;
             var student = new Student
             {
+                classroomId = Constants.Classroom.id,
                 name = studentName.text,
                 lastName = studentLastName.text,
                 userName = studentUserName.text,
-                password = studentPassword.text,
-                classroomId = Constants.ClassroomId
+                password = studentPassword.text
             };
 
             var method = "PUT";
             if (_creatingNew == false)
             {
                 student.classroomId = classrooms[dropdown.value].id;
-                student.id = Constants.StudentId;
+                student.id = Constants.Student.id;
                 method = "POST";
+            }
+
+            if (classrooms[dropdown.value].id != Constants.Classroom.id)
+            {
+                //TODO odstran ziaka zo skupin triedy s Constants.ClassroomId
             }
 
             APIHelper.CreateUpdateStudent(student, method);
@@ -124,7 +133,8 @@ public class ClassStudentsManager : MonoBehaviour
         
         deleteButton.onClick.AddListener(() =>
         {
-            _delEditStudent = APIHelper.GetStudent(Constants.StudentId);
+            //_delEditStudent = APIHelper.GetStudent(Constants.StudentId);
+            _delEditStudent = Constants.Student;
             deletePanel.SetActive(true);
             editPanel.SetActive(false);
             deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = Constants.GetDeleteStudentString(_delEditStudent);
@@ -140,7 +150,7 @@ public class ClassStudentsManager : MonoBehaviour
 
         confirmDelete.onClick.AddListener(() =>
         {
-            APIHelper.DeleteStudent(Constants.StudentId);
+            APIHelper.DeleteStudent(Constants.Student.id);
             //TODO zmenit? mam nanovo nacitat? zatial ok
             SceneManager.LoadScene("Scenes/ClassStudents");
         });
@@ -158,14 +168,15 @@ public class ClassStudentsManager : MonoBehaviour
     {
         var s = Instantiate(prefabItem, studentsLayout.transform);
         s.onClick.AddListener(() => {
-            Constants.StudentId = student.id;
+            Constants.Student = student;
+            Constants.LastSceneName = "ClassStudents";
             SceneManager.LoadScene("Scenes/Student"); 
         });
         var edit = s.transform.Find("Edit").GetComponent<Button>();
         edit.onClick.AddListener(() =>
         {
             _delEditStudent = student;
-            Constants.StudentId = student.id;
+            Constants.Student = student;
             editPanel.SetActive(true);
         });
         s.GetComponentInChildren<Text>().text  = (student.name);
@@ -180,4 +191,57 @@ public class ClassStudentsManager : MonoBehaviour
         Debug.Log(String.Format("Nenašila sa trieda s id {0}", _delEditStudent.classroomId));
         return -1;
     } 
+    
+    private bool AreValidValues()
+    {
+        var userNameUnderline = studentUserName.transform.Find("underline");
+        var firstNameUnderline = studentName.transform.Find("underline");
+        var lastNameUnderline = studentLastName.transform.Find("underline");
+        var passwordUnderline = studentPassword.transform.Find("underline");
+        userNameUnderline.gameObject.SetActive(false);
+        firstNameUnderline.gameObject.SetActive(false);
+        lastNameUnderline.gameObject.SetActive(false);
+        passwordUnderline.gameObject.SetActive(false);
+        var valid = true;
+
+        if (studentName.text.Length < Constants.MinimalFirstNameLength)
+        {
+            firstNameUnderline.gameObject.SetActive(true);
+            firstNameUnderline.GetComponent<Text>().text = Constants.WrongFirstNameFormatMessage;
+            valid = false;
+        }
+
+        if (studentLastName.text.Length < Constants.MinimalLastNameLength)
+        {
+            lastNameUnderline.gameObject.SetActive(true);
+            lastNameUnderline.GetComponent<Text>().text = Constants.WrongLastNameFormatMessage;
+            valid = false;
+        }
+
+        if (studentUserName.text.Length < Constants.MinimalUserNameLength)
+        {
+            userNameUnderline.gameObject.SetActive(true);
+            userNameUnderline.GetComponent<Text>().text = Constants.WrongUserNameFormatMessage;
+            valid = false;
+        }
+        else
+        {
+            var user = APIHelper.GetTeacherByUserName(studentUserName.text);
+            if (user is not null && user.id != Constants.Student.id)
+            {
+                userNameUnderline.gameObject.SetActive(true);
+                userNameUnderline.GetComponent<Text>().text = Constants.WrongUserNameAlreadyExistMessage;
+                valid = false;
+            }
+        }
+        
+        if (studentPassword.text.Length < Constants.MinimalPasswordLength)
+        {
+            passwordUnderline.gameObject.SetActive(true);
+            passwordUnderline.GetComponent<Text>().text = Constants.WrongPasswordFormatMessage;
+            valid = false;
+        }
+
+        return valid;
+    }
 }

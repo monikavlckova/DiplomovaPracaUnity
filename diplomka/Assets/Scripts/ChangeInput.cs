@@ -18,7 +18,7 @@ public class ChangeInput : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.Return))
         {
-            //TODO ma to zmysel ked to bud emobilnma apka?
+            //TODO ma to zmysel ked to bude mobilnma apka?
             Selectable next = system.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown();
             if (next != null)
             {
