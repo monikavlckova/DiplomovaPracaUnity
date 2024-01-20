@@ -10,8 +10,7 @@ using Newtonsoft.Json;
 
 public static class APIHelper
 {
-    
-    public static string GetDataObjectJson(string path)
+    private static string GetDataObjectJson(string path)
     {
         try
         {
@@ -29,7 +28,7 @@ public static class APIHelper
         return "";
     }
 
-    public static string PutPostDataObjectJson(string path, string jsonData, string method = "PUT", int id = 0)
+    private static string PutPostDataObjectJson(string path, string jsonData, string method = "PUT", int id = 0)
     {
         if (method == "POST")  path += "/" + id;
         
@@ -57,27 +56,22 @@ public static class APIHelper
         //var json = reader.ReadToEnd();
         //return json;
 
-        try {
-            using (var response = request.GetResponse())
-            {
-                var reader = new StreamReader(response.GetResponseStream());
-                var json = reader.ReadToEnd();
-                return json;
-            }
+        try
+        {
+            using var response = request.GetResponse();
+            var reader = new StreamReader(response.GetResponseStream());
+            var json = reader.ReadToEnd();
+            return json;
         }
         catch (WebException e)
         {
-            using (var response = e.Response)
-            {
-                var httpResponse = (HttpWebResponse) response;
-                Debug.Log("Error code: " + httpResponse.StatusCode + "++++++");
-                using (Stream dataa = response.GetResponseStream())
-                using (var reader = new StreamReader(dataa))
-                {
-                    var text = reader.ReadToEnd();
-                    Debug.Log("------------- " + text);
-                }
-            }
+            using var response = e.Response;
+            var httpResponse = (HttpWebResponse) response;
+            Debug.Log("Error code: " + httpResponse.StatusCode + "++++++");
+            using Stream dataa = response.GetResponseStream();
+            using var reader = new StreamReader(dataa);
+            var text = reader.ReadToEnd();
+            Debug.Log("------------- " + text);
         }
 
         return "";

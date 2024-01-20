@@ -4,7 +4,6 @@ using DbClasses;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 public class ClassGroupsManager : MonoBehaviour
 {
@@ -39,8 +38,18 @@ public class ClassGroupsManager : MonoBehaviour
     private bool _creatingNewGroup;
     private HashSet<Student> _delFromGroup = new ();
     private HashSet<Student> _addToGroup = new ();
+    private string sceneName = "ClassGroups";
     
     private void Start() {
+        float width = canvas.GetComponent<RectTransform>().rect.width;
+        float width2 = (width - 100) / 2;
+        groupsLayout.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, width2+80);
+        
+        studentsInGroupList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
+        studentsNotInGroupList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
+        
+        prefabItem.transform.Find("Edit").GetComponent<Image>().sprite = Constants.dotsSprite;
+        
         var groups = APIHelper.GetGroupsInClassroom(Constants.Classroom.id);
         AddGroupsToGrid(groups);
         var classroom = Constants.Classroom;
@@ -49,12 +58,6 @@ public class ClassGroupsManager : MonoBehaviour
         backButton.onClick.AddListener(() => {
             SceneManager.LoadScene("Scenes/Classes"); 
         });
-        
-        float width = canvas.GetComponent<RectTransform>().rect.width;
-        float width2 = (width - 100) / 2;
-        groupsLayout.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, width2+80);
-        studentsInGroupList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
-        studentsNotInGroupList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
         
         classTasksButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassTasks"));
         classStudentsButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassStudents"));
@@ -87,8 +90,7 @@ public class ClassGroupsManager : MonoBehaviour
             }
             APIHelper.CreateUpdateGroup(group, method);
             ManageStudents();
-            //TODO mam znovu nacitavat?
-            SceneManager.LoadScene("Scenes/ClassGroups");
+            Constants.mySceneManager.Reload(sceneName);
         });
         
         closeGroupPanel.onClick.AddListener(CloseGroupPanel);
@@ -118,8 +120,7 @@ public class ClassGroupsManager : MonoBehaviour
         
         confirmDelete.onClick.AddListener(() => {
             APIHelper.DeleteGroup(Constants.Group.id);
-            //TODO zmenit? mam nanovo nacitat? zatial ok
-            SceneManager.LoadScene("Scenes/ClassGroups");
+            Constants.mySceneManager.Reload(sceneName);
         });
     }
 
@@ -139,9 +140,14 @@ public class ClassGroupsManager : MonoBehaviour
         }
         
         groupPanel.SetActive(true);
-        var studentsInGroup = APIHelper.GetStudentsInGroup(Constants.Group.id);
-        var studentsNotInGroup = APIHelper.GetStudentsFromClassroomNotInGroup(Constants.Classroom.id, Constants.Group.id);
-        
+        var studentsInGroup = new List<Student>();
+        var studentsNotInGroup = APIHelper.GetStudentsInClassroom(Constants.Classroom.id);
+        if (!_creatingNewGroup)
+        {
+            studentsInGroup = APIHelper.GetStudentsInGroup(Constants.Group.id);
+            studentsNotInGroup = APIHelper.GetStudentsFromClassroomNotInGroup(Constants.Classroom.id, Constants.Group.id);
+        }
+
         AddStudentsToGrid(studentsInGroup, true);
         AddStudentsToGrid(studentsNotInGroup, false);
         ResizeStudentGroupLists();
@@ -168,8 +174,8 @@ public class ClassGroupsManager : MonoBehaviour
         var g = Instantiate(prefabItem, groupsLayout.transform);
         g.onClick.AddListener(() => {
             Constants.Group = group;
-            Constants.LastSceneName = "ClassGroups";
-            SceneManager.LoadScene("Scenes/Group"); 
+            Constants.LastSceneName = sceneName;
+            SceneManager.LoadScene("Scenes/GroupStudents"); 
         });
         var edit = g.transform.Find("Edit").GetComponent<Button>();
         edit.onClick.AddListener(() => {
@@ -191,15 +197,16 @@ public class ClassGroupsManager : MonoBehaviour
         studentItem.transform.Find("Text").GetComponent<Text>().text  = (student.name + " " + student.lastName);
         
         studentItem.transform.Find("Close").GetComponent<Button>().onClick.AddListener(() => {
-            //Constants.StudentId = student.id;
             //Constants.Student = student;
             if (addedInGroup) {
+                studentItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = Constants.xSprite;
                 studentItem.transform.parent = studentsNotInGroupList.transform;
                 addedInGroup = false;
                 if (isInGroup) _delFromGroup.Add(student);
                 else _addToGroup.Remove(student);
             }
             else {
+                studentItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = Constants.plusSprite;
                 studentItem.transform.parent = studentsInGroupList.transform;
                 addedInGroup = true;
                 if (!isInGroup) _addToGroup.Add(student);

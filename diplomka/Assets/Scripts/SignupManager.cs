@@ -14,6 +14,8 @@ public class SignupManager : MonoBehaviour
     public InputField userName;
     public InputField email;
     public InputField password;
+    
+    private string sceneName = "Signup";
     private void Start()
     {
         back.onClick.AddListener(() => {

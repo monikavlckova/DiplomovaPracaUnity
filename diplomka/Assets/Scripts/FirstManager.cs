@@ -6,11 +6,13 @@ public class FirstManager : MonoBehaviour
 {
     public Button teacherButton;
     public Button studentButton;
+    
+    private string sceneName = "First";
     private void Start()
     {
         teacherButton.onClick.AddListener(() =>
         {
-            Constants.LastSceneName = "First";
+            Constants.LastSceneName = sceneName;
             SceneManager.LoadScene("Scenes/Login");
         });
     }

@@ -27,24 +27,26 @@ public class ClassTasksManager : MonoBehaviour
     
     private Taskk _delEditTaskk;
     private bool _creatingNew;
+    private string sceneName = "ClassTasks";
     
 
     private void Start()
     {
+        float width = canvas.GetComponent<RectTransform>().rect.width;
+        float width3 = (width - 120) / 3;
+        tasksLayout.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width3, width3+80);
+        
+        prefabItem.transform.Find("Edit").GetComponent<Image>().sprite = Constants.dotsSprite;
+
         var tasks = APIHelper.GetTasksInClassroom(Constants.Classroom.id);
         AddTasksToGrid(tasks);
-        //var classroom = APIHelper.GetClassroom(Constants.ClassroomId);
         var classroom = Constants.Classroom;
         className.text = classroom.name;
         
         backButton.onClick.AddListener(() => {
             SceneManager.LoadScene("Scenes/Classes"); 
         });
-        
-        float width = canvas.GetComponent<RectTransform>().rect.width;
-        Vector2 newTaskSize = new Vector2(((width - 100) / 2), ((width - 100) / 2));
-        tasksLayout.GetComponent<GridLayoutGroup>().cellSize = newTaskSize;
-        
+
         classStudentsButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassStudents"));
         classGroupsButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassGroups"));
         
@@ -71,7 +73,6 @@ public class ClassTasksManager : MonoBehaviour
         
         deleteButton.onClick.AddListener(() =>
         {
-            //_delEditTaskk = APIHelper.GetTask(Constants.TaskId);
             _delEditTaskk = Constants.Taskk;
             deletePanel.SetActive(true);
             deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = Constants.GetDeleteTaskString(_delEditTaskk);
@@ -88,8 +89,7 @@ public class ClassTasksManager : MonoBehaviour
         confirmDelete.onClick.AddListener(() =>
         {
             APIHelper.DeleteTask(Constants.Taskk.id);
-            //TODO zmenit? mam nanovo nacitat? zatial ok
-            SceneManager.LoadScene("Scenes/ClassTasks");
+            Constants.mySceneManager.Reload(sceneName);
         });
     }
 
@@ -106,7 +106,7 @@ public class ClassTasksManager : MonoBehaviour
         var t = Instantiate(prefabItem, tasksLayout.transform);
         t.onClick.AddListener(() => {
             Constants.Taskk = taskk;
-            Constants.LastSceneName = "ClassTasks";
+            Constants.LastSceneName = sceneName;
             SceneManager.LoadScene("Scenes/Task"); 
         });
         var edit = t.transform.Find("Edit").GetComponent<Button>();

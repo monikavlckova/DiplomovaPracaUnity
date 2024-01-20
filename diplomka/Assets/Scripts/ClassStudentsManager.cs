@@ -40,8 +40,16 @@ public class ClassStudentsManager : MonoBehaviour
     private Student _delEditStudent;
     private bool _creatingNew;
     private List<Classroom> classrooms;
+    private string sceneName = "ClassStudents";
+    
     private void Start()
     {
+        float width = canvas.GetComponent<RectTransform>().rect.width;
+        float width3 = (width - 120) / 3;
+        studentsLayout.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width3, width3+80);
+        
+        prefabItem.transform.Find("Edit").GetComponent<Image>().sprite = Constants.dotsSprite;
+        
         var students = APIHelper.GetStudentsInClassroom(Constants.Classroom.id);
         AddStudentsToGrid(students);
         var classroom = Constants.Classroom;
@@ -57,11 +65,7 @@ public class ClassStudentsManager : MonoBehaviour
         backButton.onClick.AddListener(() => {
             SceneManager.LoadScene("Scenes/Classes"); 
         });
-        
-        float width = canvas.GetComponent<RectTransform>().rect.width;
-        float width3 = (width - 120) / 3;
-        studentsLayout.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width3, width3+80);
-        
+
         classTasksButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassTasks"));
         classGroupsButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassGroups"));
         
@@ -112,11 +116,11 @@ public class ClassStudentsManager : MonoBehaviour
 
             if (classrooms[dropdown.value].id != Constants.Classroom.id)
             {
-                //TODO odstran ziaka zo skupin triedy s Constants.ClassroomId
+                DeleteStudentFromGroups(Constants.Student.id);
             }
 
             APIHelper.CreateUpdateStudent(student, method);
-            SceneManager.LoadScene("Scenes/ClassStudents");
+            Constants.mySceneManager.Reload(sceneName);
         });
         
         closeStudentPanel.onClick.AddListener(() => {
@@ -151,8 +155,7 @@ public class ClassStudentsManager : MonoBehaviour
         confirmDelete.onClick.AddListener(() =>
         {
             APIHelper.DeleteStudent(Constants.Student.id);
-            //TODO zmenit? mam nanovo nacitat? zatial ok
-            SceneManager.LoadScene("Scenes/ClassStudents");
+            Constants.mySceneManager.Reload(sceneName);
         });
     }
     
@@ -167,10 +170,11 @@ public class ClassStudentsManager : MonoBehaviour
     private void AddStudentToGrid(Student student)
     {
         var s = Instantiate(prefabItem, studentsLayout.transform);
+        if (student.imagePath is not null) { s.transform.Find("Image").GetComponent<Image>().sprite = Constants.GetSprite(student.imagePath); }
         s.onClick.AddListener(() => {
             Constants.Student = student;
-            Constants.LastSceneName = "ClassStudents";
-            SceneManager.LoadScene("Scenes/Student"); 
+            Constants.LastSceneName = sceneName;
+            SceneManager.LoadScene("Scenes/StudentTasks"); 
         });
         var edit = s.transform.Find("Edit").GetComponent<Button>();
         edit.onClick.AddListener(() =>
@@ -190,7 +194,16 @@ public class ClassStudentsManager : MonoBehaviour
         }
         Debug.Log(String.Format("Nenašila sa trieda s id {0}", _delEditStudent.classroomId));
         return -1;
-    } 
+    }
+
+    private void DeleteStudentFromGroups(int studentId)
+    {
+        var groups = APIHelper.GetStudentsGroups(studentId);
+        foreach (var group in groups)
+        {
+            APIHelper.DeleteStudentGroup(studentId, group.id);
+        }
+    }
     
     private bool AreValidValues()
     {

@@ -29,6 +29,8 @@ public class ProfileManager : MonoBehaviour
     public InputField password2;
     public Button closeEditPanel;
     public Button saveChangedPassword;
+    
+    private string sceneName = "Profile";
 
     private void Start()
     {

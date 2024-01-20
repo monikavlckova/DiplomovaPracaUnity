@@ -1,11 +1,11 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MySceneManager : MonoBehaviour
 {
-    public void ChangeToScene(int sceneToChange)
+    public void Reload(string sceneName)
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneToChange);
+        SceneManager.LoadScene("Scenes/" + sceneName);
     }
     
 }

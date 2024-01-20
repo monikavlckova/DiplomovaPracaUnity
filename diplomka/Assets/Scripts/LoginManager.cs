@@ -16,6 +16,8 @@ public class LoginManager : MonoBehaviour
     public Button forgottenPasswordButton;
     public InputField userName;
     public InputField password;
+    
+    private string sceneName = "Login";
     private void Start()
     {
         loginButton.onClick.AddListener(() => 
