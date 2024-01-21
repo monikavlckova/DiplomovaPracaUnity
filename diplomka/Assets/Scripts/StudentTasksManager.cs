@@ -19,6 +19,14 @@ public class StudentTasksManager : MonoBehaviour
     public Button confirmDelete;
     
     public GameObject tasksPanel;//TODO tasks panel zoznam existujucih
+    public Button closeTasksPanel;
+    public Button saveButton;
+    public GridLayoutGroup tasksInStudentList;
+    public GridLayoutGroup tasksNotInStudentList;
+    public GameObject prefabTaskListItem;
+    
+    private HashSet<Taskk> _delFromStudent = new ();
+    private HashSet<Taskk> _addToStudent = new ();
     
     private string sceneName = "StudentTasks";
 
@@ -27,6 +35,10 @@ public class StudentTasksManager : MonoBehaviour
         var width = canvas.GetComponent<RectTransform>().rect.width;
         var width3 = (width - 120) / 3;
         layout.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width3, width3+80);
+         
+        float width2 = (width - 100) / 2;
+        tasksInStudentList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
+        tasksNotInStudentList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
         
         prefabItem.transform.Find("Edit").GetComponent<Image>().sprite = Constants.xSprite;
         
@@ -35,19 +47,10 @@ public class StudentTasksManager : MonoBehaviour
         AddTasksToGrid(tasks);
         headline.text = student.name + " " + student.lastName;
         
-        back.onClick.AddListener(() => {
-            SceneManager.LoadScene("Scenes/ClassStudents"); 
-        });
-        
+        back.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassStudents"));
         studentsGroupsButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/StudentGroups"));
-        
-        closeDeletePanel.onClick.AddListener(() => {
-            deletePanel.SetActive(false);
-        });
-
-        deletePanel.GetComponent<Button>().onClick.AddListener(() => {
-            deletePanel.SetActive(false);
-        });
+        closeDeletePanel.onClick.AddListener(() => deletePanel.SetActive(false));
+        deletePanel.GetComponent<Button>().onClick.AddListener(() => deletePanel.SetActive(false));
 
         confirmDelete.onClick.AddListener(() =>
         {
@@ -55,10 +58,14 @@ public class StudentTasksManager : MonoBehaviour
             Constants.mySceneManager.Reload(sceneName);
         });
         
-        addTasks.onClick.AddListener(() =>
-        {
-            //TODO studentsPanel.SetActive(true);
+        addTasks.onClick.AddListener(SetActiveTasksPanel);
+
+        saveButton.onClick.AddListener(() => {
+            ManageTasks();
+            Constants.mySceneManager.Reload(sceneName);
         });
+        
+        closeTasksPanel.onClick.AddListener(() => tasksPanel.SetActive(false));
     }
 
     public void AddTasksToGrid(List<Taskk> list)
@@ -81,5 +88,72 @@ public class StudentTasksManager : MonoBehaviour
             });
             s.GetComponentInChildren<Text>().text  = (task.name);
         }
+    }
+    
+    private void SetActiveTasksPanel() {
+        foreach (Transform child in tasksInStudentList.transform) Destroy(child.gameObject);
+
+        foreach (Transform child in tasksNotInStudentList.transform) Destroy(child.gameObject);
+        
+        tasksPanel.SetActive(true);
+        var tasksInStudent = APIHelper.GetStudentsTasks(Constants.Student.id);
+        var tasksNotInStudent = APIHelper.GetTasksFromTeacherNotInStudent(Constants.User.id, Constants.Student.id);
+        
+        AddTasksToLists(tasksInStudent, tasksNotInStudent);
+        ResizeTaskStudentLists();
+    }
+    
+    private void AddTasksToLists(List<Taskk> tasksInStudent, List<Taskk> tasksNotInStudent)
+    {
+        foreach (var task in tasksInStudent) AddTaskToList(task, tasksInStudentList, true); 
+        foreach (var task in tasksNotInStudent) AddTaskToList(task, tasksNotInStudentList, false); 
+    }
+    
+    private void AddTaskToList(Taskk task, GridLayoutGroup grid, bool isInStudent) {
+        var addedInStudent = isInStudent;
+        var taskItem = Instantiate(prefabTaskListItem, grid.transform);
+        taskItem.transform.Find("Text").GetComponent<Text>().text  = (task.name);
+        if (isInStudent) taskItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = Constants.xSprite;
+        else taskItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = Constants.plusSprite;
+        
+        taskItem.transform.Find("Close").GetComponent<Button>().onClick.AddListener(() => {
+            //Constants.Taskk = task;
+            if (addedInStudent) {
+                taskItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = Constants.plusSprite;
+                taskItem.transform.parent = tasksNotInStudentList.transform;
+                addedInStudent = false;
+                if (isInStudent) _delFromStudent.Add(task);
+                else _addToStudent.Remove(task);
+            }
+            else {
+                taskItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = Constants.xSprite;
+                taskItem.transform.parent = tasksInStudentList.transform;
+                addedInStudent = true;
+                if (!isInStudent) _addToStudent.Add(task);
+                else _delFromStudent.Remove(task);
+            }
+            ResizeTaskStudentLists();
+        });
+    }
+    
+    private void ResizeTaskStudentLists() {
+        var height = 95*((tasksInStudentList.transform.childCount + 1) / 2)-15;
+        var height2 = 95*((tasksNotInStudentList.transform.childCount + 1) / 2)-15;
+        RectTransform rt = tasksInStudentList.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2 (rt.sizeDelta.x, height);
+        RectTransform rt2 = tasksNotInStudentList.GetComponent<RectTransform>();
+        rt2.sizeDelta = new Vector2 (rt2.sizeDelta.x, height2);
+    }
+    
+    private void ManageTasks() {
+        foreach (var task in _addToStudent) {
+            var studentTask = new StudentTask { studentId = Constants.Student.id, taskkId = task.id };
+            APIHelper.CreateUpdateStudentTask(studentTask);
+        }
+
+        foreach (var task in _delFromStudent) APIHelper.DeleteStudentTask(Constants.Student.id, task.id);
+
+        _delFromStudent = new HashSet<Taskk>();
+        _addToStudent = new HashSet<Taskk>();
     }
 }

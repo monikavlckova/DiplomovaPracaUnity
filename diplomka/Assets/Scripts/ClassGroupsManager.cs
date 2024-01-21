@@ -94,28 +94,16 @@ public class ClassGroupsManager : MonoBehaviour
         });
         
         closeGroupPanel.onClick.AddListener(CloseGroupPanel);
-        
-        closeEditPanel.onClick.AddListener(() => {
-            editPanel.SetActive(false);
-        });
-        
-        editPanel.GetComponent<Button>().onClick.AddListener(() => {
-            editPanel.SetActive(false);
-        });
-        
+        closeEditPanel.onClick.AddListener(() => editPanel.SetActive(false));
+        closeDeletePanel.onClick.AddListener(() => deletePanel.SetActive(false));
+        deletePanel.GetComponent<Button>().onClick.AddListener(() => deletePanel.SetActive(false));
+        editPanel.GetComponent<Button>().onClick.AddListener(() => editPanel.SetActive(false));
+
         deleteButton.onClick.AddListener(() => {
             _delEditGroup = Constants.Group;
             deletePanel.SetActive(true);
             editPanel.SetActive(false);
             deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = Constants.GetDeleteGroupString(_delEditGroup);
-        });
-        
-        closeDeletePanel.onClick.AddListener(() => {
-            deletePanel.SetActive(false);
-        });
-        
-        deletePanel.GetComponent<Button>().onClick.AddListener(() => {
-            deletePanel.SetActive(false);
         });
         
         confirmDelete.onClick.AddListener(() => {
@@ -148,8 +136,7 @@ public class ClassGroupsManager : MonoBehaviour
             studentsNotInGroup = APIHelper.GetStudentsFromClassroomNotInGroup(Constants.Classroom.id, Constants.Group.id);
         }
 
-        AddStudentsToGrid(studentsInGroup, true);
-        AddStudentsToGrid(studentsNotInGroup, false);
+        AddStudentsToLists(studentsInGroup, studentsNotInGroup);
         ResizeStudentGroupLists();
     }
 
@@ -164,10 +151,7 @@ public class ClassGroupsManager : MonoBehaviour
 
     private void AddGroupsToGrid(List<Group> list)
     {
-        foreach (var group in list)
-        {
-            AddGroupToGrid(group);
-        }
+        foreach (var group in list) AddGroupToGrid(group);
     }
     
     private void AddGroupToGrid(Group group) {
@@ -186,12 +170,12 @@ public class ClassGroupsManager : MonoBehaviour
         g.GetComponentInChildren<Text>().text  = (group.name);
     }
     
-    private void AddStudentsToGrid(List<Student> list, Boolean isInGroup) {
-        if (isInGroup) foreach (var student in list) AddStudentToGrid(student, studentsInGroupList, true); 
-        else foreach (var student in list) AddStudentToGrid(student, studentsNotInGroupList, false); 
+    private void AddStudentsToLists(List<Student> studentsInGroup, List<Student> studentsNotInGroup) {
+        foreach (var student in studentsInGroup) AddStudentToList(student, studentsInGroupList, true); 
+        foreach (var student in studentsNotInGroup) AddStudentToList(student, studentsNotInGroupList, false); 
     }
     
-    private void AddStudentToGrid(Student student, GridLayoutGroup grid, Boolean isInGroup) {
+    private void AddStudentToList(Student student, GridLayoutGroup grid, bool isInGroup) {
         var addedInGroup = isInGroup;
         var studentItem = Instantiate(prefabStudentListItem, grid.transform);
         studentItem.transform.Find("Text").GetComponent<Text>().text  = (student.name + " " + student.lastName);
@@ -222,10 +206,7 @@ public class ClassGroupsManager : MonoBehaviour
             APIHelper.CreateUpdateStudentGroup(studentGroup);
         }
 
-        foreach (var student in _delFromGroup) 
-        {
-            APIHelper.DeleteStudentGroup(student.id, Constants.Group.id);
-        }
+        foreach (var student in _delFromGroup) APIHelper.DeleteStudentGroup(student.id, Constants.Group.id);
         
         _delFromGroup = new HashSet<Student>();
         _addToGroup = new HashSet<Student>();

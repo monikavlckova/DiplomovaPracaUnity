@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DbClasses
+﻿namespace DbClasses
 {
     public class StudentTask
     {

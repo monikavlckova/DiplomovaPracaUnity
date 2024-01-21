@@ -19,7 +19,14 @@ public class StudentGroupsManager : MonoBehaviour
     public Button confirmDelete;
     
     public GameObject groupsPanel;//TODO groups panel zoznam existujucih
+    public Button closeGroupsPanel;
+    public Button saveButton;
+    public GridLayoutGroup groupsInStudentList;
+    public GridLayoutGroup groupsNotInStudentList;
+    public GameObject prefabGroupListItem;
     
+    private HashSet<Group> _delFromStudent = new ();
+    private HashSet<Group> _addToStudent = new ();
     private string sceneName = "StudentGroups";
 
     private void Start()
@@ -27,6 +34,10 @@ public class StudentGroupsManager : MonoBehaviour
         var width = canvas.GetComponent<RectTransform>().rect.width;
         var width3 = (width - 120) / 3;
         layout.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width3, width3+80);
+         
+        float width2 = (width - 100) / 2;
+        groupsInStudentList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
+        groupsNotInStudentList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
         
         prefabItem.transform.Find("Edit").GetComponent<Image>().sprite = Constants.xSprite;
         
@@ -35,19 +46,10 @@ public class StudentGroupsManager : MonoBehaviour
         AddGroupsToGrid(groups);
         headline.text = student.name + " " + student.lastName;
         
-        back.onClick.AddListener(() => {
-            SceneManager.LoadScene("Scenes/ClassStudents"); 
-        });
-        
+        back.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassStudents"));
         studentsTasksButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/StudentTasks"));
-        
-        closeDeletePanel.onClick.AddListener(() => {
-            deletePanel.SetActive(false);
-        });
-
-        deletePanel.GetComponent<Button>().onClick.AddListener(() => {
-            deletePanel.SetActive(false);
-        });
+        closeDeletePanel.onClick.AddListener(() => deletePanel.SetActive(false));
+        deletePanel.GetComponent<Button>().onClick.AddListener(() => deletePanel.SetActive(false));
 
         confirmDelete.onClick.AddListener(() =>
         {
@@ -55,10 +57,14 @@ public class StudentGroupsManager : MonoBehaviour
             Constants.mySceneManager.Reload(sceneName);
         });
         
-        addGroups.onClick.AddListener(() =>
-        {
-            //TODO studentsPanel.SetActive(true);
+        addGroups.onClick.AddListener(SetActiveGroupsPanel);
+
+        saveButton.onClick.AddListener(() => {
+            ManageGroups();
+            Constants.mySceneManager.Reload(sceneName);
         });
+        
+        closeGroupsPanel.onClick.AddListener(() => groupsPanel.SetActive(false));
     }
 
     public void AddGroupsToGrid(List<Group> list)
@@ -83,5 +89,70 @@ public class StudentGroupsManager : MonoBehaviour
         }
     }
     
+    private void SetActiveGroupsPanel() {
+        foreach (Transform child in groupsInStudentList.transform) Destroy(child.gameObject);
 
+        foreach (Transform child in groupsNotInStudentList.transform) Destroy(child.gameObject);
+        
+        groupsPanel.SetActive(true);
+        var groupsInStudent = APIHelper.GetStudentsGroups(Constants.Student.id);
+        var groupsNotInStudent = APIHelper.GetGroupsFromInClassroomNotInStudent(Constants.Classroom.id, Constants.Student.id);
+        
+        AddGroupsToLists(groupsInStudent, groupsNotInStudent);
+        ResizeGroupStudentLists();
+    }
+    
+    private void AddGroupsToLists(List<Group> groupsInStudent, List<Group> groupsNotInStudent)
+    {
+        foreach (var group in groupsInStudent) AddGroupsToList(group, groupsInStudentList, true); 
+        foreach (var group in groupsNotInStudent) AddGroupsToList(group, groupsNotInStudentList, false); 
+    }
+    
+    private void AddGroupsToList(Group group, GridLayoutGroup grid, bool isInStudent) {
+        var addedInStudent = isInStudent;
+        var groupItem = Instantiate(prefabGroupListItem, grid.transform);
+        groupItem.transform.Find("Text").GetComponent<Text>().text  = (group.name);
+        if (isInStudent) groupItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = Constants.xSprite;
+        else groupItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = Constants.plusSprite;
+        
+        groupItem.transform.Find("Close").GetComponent<Button>().onClick.AddListener(() => {
+            //Constants.Group = group;
+            if (addedInStudent) {
+                groupItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = Constants.plusSprite;
+                groupItem.transform.parent = groupsNotInStudentList.transform;
+                addedInStudent = false;
+                if (isInStudent) _delFromStudent.Add(group);
+                else _addToStudent.Remove(group);
+            }
+            else {
+                groupItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = Constants.xSprite;
+                groupItem.transform.parent = groupsInStudentList.transform;
+                addedInStudent = true;
+                if (!isInStudent) _addToStudent.Add(group);
+                else _delFromStudent.Remove(group);
+            }
+            ResizeGroupStudentLists();
+        });
+    }
+    
+    private void ResizeGroupStudentLists() {
+        var height = 95*((groupsInStudentList.transform.childCount + 1) / 2)-15;
+        var height2 = 95*((groupsNotInStudentList.transform.childCount + 1) / 2)-15;
+        RectTransform rt = groupsInStudentList.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2 (rt.sizeDelta.x, height);
+        RectTransform rt2 = groupsNotInStudentList.GetComponent<RectTransform>();
+        rt2.sizeDelta = new Vector2 (rt2.sizeDelta.x, height2);
+    }
+    
+    private void ManageGroups() {
+        foreach (var group in _addToStudent) {
+            var studentGroup = new StudentGroup { studentId = Constants.Student.id, groupId = group.id };
+            APIHelper.CreateUpdateStudentGroup(studentGroup);
+        }
+
+        foreach (var group in _delFromStudent) APIHelper.DeleteStudentGroup(Constants.Student.id, group.id);
+
+        _delFromStudent = new HashSet<Group>();
+        _addToStudent = new HashSet<Group>();
+    }
 }

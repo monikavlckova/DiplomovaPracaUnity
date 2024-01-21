@@ -130,7 +130,11 @@ public static class APIHelper
     {
         return JsonConvert.DeserializeObject<List<Group>>(GetDataObjectJson(Constants.GroupsGetByStudentIdEndpointUrl + "/" + studentId));
     }
-    
+
+    public static List<Group> GetGroupsFromInClassroomNotInStudent(int classroomId, int studentId)
+    {
+        return JsonConvert.DeserializeObject<List<Group>>(GetDataObjectJson(Constants.GroupsGetByClassroomIdNotInStudentIdEndpointUrl + "/" + classroomId + "/" + studentId));
+    }
     public static GroupTask GetGroupTask(int groupId, int taskId)
     {
         return JsonUtility.FromJson<GroupTask>(GetDataObjectJson(Constants.GroupTaskEndpointUrl + "/" + groupId + "/" + taskId));
@@ -190,7 +194,17 @@ public static class APIHelper
     {
         return JsonConvert.DeserializeObject<List<Taskk>>(GetDataObjectJson(Constants.TasksGetByStudentIdEndpointUrl + "/" + studentId));
     }
+
+    public static List<Taskk> GetTasksFromTeacherNotInGroup(int teacherId, int groupId)
+    {
+        return JsonConvert.DeserializeObject<List<Taskk>>(GetDataObjectJson(Constants.TasksGetByTeacherIdNotInGroupIdEndpointUrl + "/" + teacherId + "/" + groupId));
+    }
     
+    public static List<Taskk> GetTasksFromTeacherNotInStudent(int teacherId, int studentId)
+    {
+        return JsonConvert.DeserializeObject<List<Taskk>>(GetDataObjectJson(Constants.TasksGetByTeacherIdNotInStudentIdEndpointUrl + "/" + teacherId + "/" + studentId));
+    }
+
     public static Teacher GetTeacher(int id)
     {
         return JsonUtility.FromJson<Teacher>(GetDataObjectJson(Constants.TeachersEndpointUrl + "/" + id));

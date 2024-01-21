@@ -1,4 +1,5 @@
-﻿using DbClasses;
+﻿using System;
+using DbClasses;
 using UnityEngine;
 
 public static class Constants
@@ -13,20 +14,18 @@ public static class Constants
     public const string GroupsEndpointUrl = ServerUrl + "/Groups";
     public const string GroupsGetByClassroomIdEndpointUrl = ServerUrl + "/Groups/getByClassroomId";
     public const string GroupsGetByStudentIdEndpointUrl = ServerUrl + "/Groups/getByStudentId";
+    public const string GroupsGetByClassroomIdNotInStudentIdEndpointUrl = ServerUrl + "/Groups/getByClassroomIdNotInStudentId";
 
     public const string GroupTaskEndpointUrl = ServerUrl + "/GroupsTasks";
 
     public const string StudentsEndpointUrl = ServerUrl + "/Students";
     public const string StudentsGetByClassroomIdEndpointUrl = ServerUrl + "/Students/getByClassroomId";
     public const string StudentsGetByGroupIdEndpointUrl = ServerUrl + "/Students/getByGroupId";
-
-    public const string StudentsGetByClassroomIdNotInGroupIdEndpointUrl =
-        ServerUrl + "/Students/getByClassroomIdNotInGroupId";
+    public const string StudentsGetByClassroomIdNotInGroupIdEndpointUrl = ServerUrl + "/Students/getByClassroomIdNotInGroupId";
 
     public const string StudentGroupEndpointUrl = ServerUrl + "/StudentsGroups";
 
-    public const string GetAllClassroomStudentsGroupsEndpointUrl =
-        ServerUrl + "/StudentsGroups/getAllClassroomStudentsGroups";
+    public const string GetAllClassroomStudentsGroupsEndpointUrl = ServerUrl + "/StudentsGroups/getAllClassroomStudentsGroups";
 
     public const string StudentTaskEndpointUrl = ServerUrl + "/StudentsTasks";
 
@@ -34,6 +33,8 @@ public static class Constants
     public const string TasksGetByClassroomIdEndpointUrl = ServerUrl + "/Tasks/getByClassroomId";
     public const string TasksGetByGroupIdEndpointUrl = ServerUrl + "/Tasks/getByGroupId";
     public const string TasksGetByStudentIdEndpointUrl = ServerUrl + "/Tasks/getByStudentId";
+    public const string TasksGetByTeacherIdNotInGroupIdEndpointUrl = ServerUrl + "/Tasks/getByTeacherIdNotInGroupId";
+    public const string TasksGetByTeacherIdNotInStudentIdEndpointUrl = ServerUrl + "/Tasks/getByTeacherIdNotInStudentId";
 
     public const string TeachersEndpointUrl = ServerUrl + "/Teachers";
     public const string TeacherGetByEmailEndpointUrl = ServerUrl + "/Teachers/getByEmail";
@@ -41,21 +42,13 @@ public static class Constants
     public const string TeacherGetByLoginEndpointUrl = ServerUrl + "/Teachers/getByLogin";
 
     public const string UsersEndpointUrl = ServerUrl + "/Users";
-
-    public const string SaveButtonTextUpdate = "Uložiť";
-    public const string SaveButtonTextCreate = "Vytvoriť";
-    public const string WrongFirstNameFormatMessage = "Musí obsahovať aspoň 2 znaky!";
-    public const string WrongLastNameFormatMessage = "Musí obsahovať aspoň 2 znaky!";
-    public const string WrongUserNameFormatMessage = "Musí obsahovať aspoň 4 znaky!";
-    public const string WrongUserNameAlreadyExistMessage = "Obsadený login!";
-    public const string WrongEmailFormatMessage = "Nesprávny formát!";
-    public const string WrongEmailAlreadyExistMessage = "Konto s e-mailom uz existuje!";
-    public const string WrongPasswordFormatMessage = "Musí obsahovať aspoň 4 znaky!";
-    public const string WrongPasswordsNotSameMessage = "Heslá sa nezhodujú!";
-    public const string WrongClassroomNameFormatMessage = "Musí obsahovať aspoň 2 znaky!";
-    public const string WrongGroupNameFormatMessage = "Musí obsahovať aspoň 2 znaky!";
-    public const string WrongTaskNameFormatMessage = "Musí obsahovať aspoň 2 znaky!";
-    public const string WrongUserNameOrPasswordMessage = "Nesprávny login alebo heslo!";
+    
+    private static string GetWrongFormatMassage(int min)
+    {
+        if (min == 1) return String.Format("Musí obsahovať aspoň {0} znak!", min);
+        if (min <= 4) return String.Format("Musí obsahovať aspoň {0} znaky!", min);
+        return String.Format("Musí obsahovať aspoň {0} znakov!", min);
+    }
 
     public const int MinimalFirstNameLength = 2;
     public const int MinimalLastNameLength = 2;
@@ -64,6 +57,21 @@ public static class Constants
     public const int MinimalClassroomNameLength = 2;
     public const int MinimalGroupNameLength = 2;
     public const int MinimalTaskNameLength = 2;
+
+    public const string SaveButtonTextUpdate = "Uložiť";
+    public const string SaveButtonTextCreate = "Vytvoriť";
+    public static readonly string WrongFirstNameFormatMessage = GetWrongFormatMassage(MinimalFirstNameLength);
+    public static readonly string WrongLastNameFormatMessage = GetWrongFormatMassage(MinimalLastNameLength);
+    public static readonly string WrongUserNameFormatMessage = GetWrongFormatMassage(MinimalUserNameLength);
+    public const string WrongUserNameAlreadyExistMessage = "Obsadený login!";
+    public const string WrongEmailFormatMessage = "Nesprávny formát!";
+    public const string WrongEmailAlreadyExistMessage = "Konto s e-mailom uz existuje!";
+    public static readonly string WrongPasswordFormatMessage = GetWrongFormatMassage(MinimalPasswordLength);
+    public const string WrongPasswordsNotSameMessage = "Heslá sa nezhodujú!";
+    public static readonly string WrongClassroomNameFormatMessage = GetWrongFormatMassage(MinimalClassroomNameLength);
+    public static readonly string WrongGroupNameFormatMessage = GetWrongFormatMassage(MinimalGroupNameLength);
+    public static readonly string WrongTaskNameFormatMessage = GetWrongFormatMassage(MinimalTaskNameLength);
+    public const string WrongUserNameOrPasswordMessage = "Nesprávny login alebo heslo!";
 
     public static string LastSceneName = "First";
 
@@ -111,7 +119,7 @@ public static class Constants
 
     public static Sprite xSprite =  Resources.Load <Sprite>("Sprites/close");
     public static Sprite dotsSprite =  Resources.Load <Sprite>("Sprites/more");
-    public static Sprite plusSprite =  Resources.Load <Sprite>("Sprites/more");
+    public static Sprite plusSprite =  Resources.Load <Sprite>("Sprites/plus");
     
     public static EmailSender emailSender = new EmailSender();
     public static MySceneManager mySceneManager = new MySceneManager();
