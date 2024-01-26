@@ -28,16 +28,15 @@ public class ClassesManager : MonoBehaviour
     
     private Classroom _delEditClassroom;
     private bool _creatingNew;
-    private string sceneName = "Classes";
+    private const string SceneName = "Classes";
+
     private void Start()
     {
         var classes = APIHelper.GetTeachersClassrooms(Constants.User.id); 
         AddClassroomsToGrid(classes);
         
-        logoutButton.onClick.AddListener(() => {
-            SceneManager.LoadScene("Scenes/Login"); 
-        });
-        
+        logoutButton.onClick.AddListener(() => SceneManager.LoadScene("Login"));
+
         addClass.onClick.AddListener(() =>
         {
             _creatingNew = true;
@@ -47,8 +46,8 @@ public class ClassesManager : MonoBehaviour
         
         profile.onClick.AddListener(() =>
         {
-            Constants.LastSceneName = sceneName;
-            SceneManager.LoadScene("Scenes/Profile");
+            Constants.LastSceneName = SceneName;
+            SceneManager.LoadScene("Profile");
         });
 
         editButton.onClick.AddListener(() =>
@@ -64,11 +63,7 @@ public class ClassesManager : MonoBehaviour
         {
             if (!AreValidValues()) return;
            
-            var classroom = new Classroom
-            {
-                name = className.text,
-                teacherId = Constants.User.id
-            };
+            var classroom = new Classroom { name = className.text, teacherId = Constants.User.id };
             var method = "PUT";
             if (_creatingNew == false)
             {
@@ -77,23 +72,7 @@ public class ClassesManager : MonoBehaviour
             }
             APIHelper.CreateUpdateClassroom(classroom, method);
             classPanel.SetActive(false);
-            Constants.mySceneManager.Reload(sceneName);
-        });
-        
-        closeClassPanel.onClick.AddListener(() => {
-            classPanel.SetActive(false);
-        });
-        
-        classPanel.GetComponent<Button>().onClick.AddListener(() => {
-            classPanel.SetActive(false);
-        });
-        
-        closeEditPanel.onClick.AddListener(() => {
-            editPanel.SetActive(false);
-        });
-        
-        editPanel.GetComponent<Button>().onClick.AddListener(() => {
-            editPanel.SetActive(false);
+            Constants.mySceneManager.Reload(SceneName);
         });
         
         deleteButton.onClick.AddListener(() =>
@@ -104,21 +83,20 @@ public class ClassesManager : MonoBehaviour
             deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = Constants.GetDeleteClassroomString(_delEditClassroom);
         });
         
-        closeDeletePanel.onClick.AddListener(() => {
-            deletePanel.SetActive(false);
-        });
-        
-        deletePanel.GetComponent<Button>().onClick.AddListener(() => {
-            deletePanel.SetActive(false);
-        });
-        
         confirmDelete.onClick.AddListener(() =>
         {
             SwitchClassroomTasksToStudentTasks();
             SwitchGroupTasksToStudentTasks();
             APIHelper.DeleteClassroom(Constants.Classroom.id);
-            Constants.mySceneManager.Reload(sceneName);
+            Constants.mySceneManager.Reload(SceneName);
         });
+        
+        closeClassPanel.onClick.AddListener(() => classPanel.SetActive(false));
+        classPanel.GetComponent<Button>().onClick.AddListener(() => classPanel.SetActive(false));
+        closeEditPanel.onClick.AddListener(() => editPanel.SetActive(false));
+        editPanel.GetComponent<Button>().onClick.AddListener(() => editPanel.SetActive(false));
+        closeDeletePanel.onClick.AddListener(() => deletePanel.SetActive(false));
+        deletePanel.GetComponent<Button>().onClick.AddListener(() => deletePanel.SetActive(false));
     }
 
     private static void SwitchClassroomTasksToStudentTasks()
@@ -127,7 +105,6 @@ public class ClassesManager : MonoBehaviour
         var classroomTasks = APIHelper.GetTasksInClassroom(Constants.Classroom.id);
         foreach (var student in students) {
             foreach (var task in classroomTasks) {
-                Debug.Log(student.id + " class " + task.id);
                 var studentTask = new StudentTask { studentId = student.id, taskkId = task.id };
                 APIHelper.CreateUpdateStudentTask(studentTask);
             }
@@ -142,7 +119,6 @@ public class ClassesManager : MonoBehaviour
             var groupTasks = APIHelper.GetGroupsTasks(group.id);
             foreach (var student in studentsInGroup) {
                 foreach (var task in groupTasks) {
-                    Debug.Log(student.id + " group " + task.id);
                     var studentTask = new StudentTask { studentId = student.id, taskkId = task.id };
                     APIHelper.CreateUpdateStudentTask(studentTask);
                 }
@@ -154,10 +130,7 @@ public class ClassesManager : MonoBehaviour
     {
         if (list  == null) return;
         
-        foreach (var classroom in list)
-        {
-            AddClassroomToGrid(classroom);
-        }
+        foreach (var classroom in list) AddClassroomToGrid(classroom);
     }
 
     private void AddClassroomToGrid(Classroom classroom)
@@ -165,8 +138,8 @@ public class ClassesManager : MonoBehaviour
         var c = Instantiate(prefabItem, classroomsLayout.transform);
         c.onClick.AddListener(() => {
             Constants.Classroom = classroom;
-            Constants.LastSceneName = sceneName;
-            SceneManager.LoadScene("Scenes/ClassStudents"); 
+            Constants.LastSceneName = SceneName;
+            SceneManager.LoadScene("ClassStudents"); 
         });
         var edit = c.transform.Find("Edit").GetComponent<Button>();
         edit.onClick.AddListener(() =>

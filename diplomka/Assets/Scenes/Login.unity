@@ -416,13 +416,58 @@ MonoBehaviour:
   forgottenPasswordPanel: {fileID: 2074763661}
   closeForgottenPasswordPanel: {fileID: 1430532941}
   sendNewPasswordButton: {fileID: 1358871326}
-  email: {fileID: 1892114467}
+  email: {fileID: 1266359049}
   back: {fileID: 179122991}
   loginButton: {fileID: 541245705}
   signupButton: {fileID: 892066722}
   forgottenPasswordButton: {fileID: 598327874}
   userName: {fileID: 589809641}
   password: {fileID: 573761860}
+--- !u!1 &344056235
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 344056236}
+  - component: {fileID: 344056237}
+  m_Layer: 5
+  m_Name: empty
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &344056236
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344056235}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1794546739}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &344056237
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344056235}
+  m_CullTransparentMesh: 1
 --- !u!1 &541245703
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,7 +501,7 @@ RectTransform:
   m_Children:
   - {fileID: 1885176035}
   m_Father: {fileID: 1794546739}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -553,6 +598,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1794546739}
     m_Modifications:
+    - target: {fileID: 283556800846869060, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Text
+      value: Heslo
+      objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943812, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_InputType
@@ -581,7 +631,7 @@ PrefabInstance:
     - target: {fileID: 3599132361556943818, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_Name
-      value: PasswordInputField
+      value: Password
       objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
@@ -626,7 +676,7 @@ PrefabInstance:
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
@@ -693,6 +743,11 @@ PrefabInstance:
       propertyPath: m_Text
       value: Heslo
       objectReference: {fileID: 0}
+    - target: {fileID: 6913665783807692220, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Name
+      value: PasswordInputField
+      objectReference: {fileID: 0}
     - target: {fileID: 8030025393523623555, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_Text
@@ -708,7 +763,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &573761860 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3599132361556943812, guid: 39dc4c682832bba479d40d8e2c8ca894,
+  m_CorrespondingSourceObject: {fileID: 288552669479312268, guid: 39dc4c682832bba479d40d8e2c8ca894,
     type: 3}
   m_PrefabInstance: {fileID: 573761858}
   m_PrefabAsset: {fileID: 0}
@@ -793,6 +848,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1794546739}
     m_Modifications:
+    - target: {fileID: 283556800846869060, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Text
+      value: "Pou\u017E\xEDvate\u013Esk\xE9 meno"
+      objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943812, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_Colors.m_SelectedColor.b
@@ -811,7 +871,7 @@ PrefabInstance:
     - target: {fileID: 3599132361556943818, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_Name
-      value: UserNameInputField
+      value: UserName
       objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
@@ -856,7 +916,7 @@ PrefabInstance:
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
@@ -923,6 +983,11 @@ PrefabInstance:
       propertyPath: m_Text
       value: Login
       objectReference: {fileID: 0}
+    - target: {fileID: 6913665783807692220, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Name
+      value: UserNameInputField
+      objectReference: {fileID: 0}
     - target: {fileID: 8030025393523623555, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_Text
@@ -938,7 +1003,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &589809641 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3599132361556943812, guid: 39dc4c682832bba479d40d8e2c8ca894,
+  m_CorrespondingSourceObject: {fileID: 288552669479312268, guid: 39dc4c682832bba479d40d8e2c8ca894,
     type: 3}
   m_PrefabInstance: {fileID: 589809639}
   m_PrefabAsset: {fileID: 0}
@@ -981,7 +1046,7 @@ RectTransform:
   m_Children:
   - {fileID: 1013167909}
   m_Father: {fileID: 1794546739}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1171,7 +1236,7 @@ RectTransform:
   m_Children:
   - {fileID: 1157108824}
   m_Father: {fileID: 1794546739}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1662,7 +1727,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -100, y: 400}
+  m_SizeDelta: {x: -100, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1180843713
 MonoBehaviour:
@@ -1710,10 +1775,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1180843712}
     m_Modifications:
+    - target: {fileID: 283556800846869060, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Text
+      value: Email
+      objectReference: {fileID: 0}
     - target: {fileID: 2886893206061562735, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3180202938279885121, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.9372549
+      objectReference: {fileID: 0}
+    - target: {fileID: 3180202938279885121, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.9372549
+      objectReference: {fileID: 0}
+    - target: {fileID: 3180202938279885121, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.9372549
       objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943818, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
@@ -1763,7 +1848,7 @@ PrefabInstance:
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
@@ -1808,7 +1893,7 @@ PrefabInstance:
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 230
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
@@ -1830,6 +1915,11 @@ PrefabInstance:
       propertyPath: m_Text
       value: e-mail
       objectReference: {fileID: 0}
+    - target: {fileID: 6913665783807692220, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Name
+      value: EmailInputField
+      objectReference: {fileID: 0}
     - target: {fileID: 8030025393523623555, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_Text
@@ -1843,6 +1933,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1266359047}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1266359049 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 288552669479312268, guid: 39dc4c682832bba479d40d8e2c8ca894,
+    type: 3}
+  m_PrefabInstance: {fileID: 1266359047}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d199490a83bb2b844b9695cbf13b01ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1358871322
 GameObject:
   m_ObjectHideFlags: 0
@@ -1995,6 +2097,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CloseForgottenPaswordPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 2678954043042265305, guid: ed35d2918ac75304da45dea273cecd45,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4783333730286274281, guid: ed35d2918ac75304da45dea273cecd45,
         type: 3}
@@ -2149,12 +2256,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1794546739}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 200}
+  m_SizeDelta: {x: 0, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1779797037
 MonoBehaviour:
@@ -2232,6 +2339,7 @@ RectTransform:
   - {fileID: 62954559}
   - {fileID: 589809640}
   - {fileID: 573761859}
+  - {fileID: 344056236}
   - {fileID: 541245704}
   - {fileID: 598327873}
   - {fileID: 1779797036}
@@ -2296,12 +2404,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 40
-    m_Right: 40
-    m_Top: 40
-    m_Bottom: 100
+    m_Left: 50
+    m_Right: 50
+    m_Top: 50
+    m_Bottom: 80
   m_ChildAlignment: 7
-  m_Spacing: 20
+  m_Spacing: 10
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -2389,18 +2497,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1885176034}
   m_CullTransparentMesh: 0
---- !u!114 &1892114467 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3599132361556943812, guid: 39dc4c682832bba479d40d8e2c8ca894,
-    type: 3}
-  m_PrefabInstance: {fileID: 1266359047}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d199490a83bb2b844b9695cbf13b01ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1976980885
 GameObject:
   m_ObjectHideFlags: 0

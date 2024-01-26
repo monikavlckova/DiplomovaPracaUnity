@@ -6,16 +6,14 @@ public class TaskManager : MonoBehaviour
 {
     public Button back;
     
-    private string sceneName = "Task";
+    private const string SceneName = "Task";
     private void Start()
     {
         //var task = Constants.Taskk;
         
         Screen.orientation = ScreenOrientation.LandscapeLeft;
         
-        back.onClick.AddListener(() => {
-            SceneManager.LoadScene("Scenes/"+ Constants.LastSceneName); 
-        });
+        back.onClick.AddListener(() => SceneManager.LoadScene(Constants.LastSceneName));
         
     }
     

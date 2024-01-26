@@ -43,18 +43,8 @@ public class EmailSender
     {
         // Get the unique identifier for this asynchronous operation.
         string token = (string)e.UserState;
-
-        if (e.Cancelled)
-        {
-            Debug.Log("Send canceled "+ token);
-        }
-        if (e.Error != null)
-        {
-            Debug.Log("[ "+token+" ] " + " " + e.Error.ToString());
-        }
-        else
-        {
-            Debug.Log("Message sent.");
-        }
+        if (e.Cancelled) Debug.Log("Send canceled "+ token);
+        if (e.Error != null) Debug.Log("[ "+token+" ] " + " " + e.Error.ToString());
+        else Debug.Log("Message sent.");
     }
 }

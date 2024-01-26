@@ -5,7 +5,7 @@ public class MySceneManager : MonoBehaviour
 {
     public void Reload(string sceneName)
     {
-        SceneManager.LoadScene("Scenes/" + sceneName);
+        SceneManager.LoadScene(sceneName);
     }
     
 }

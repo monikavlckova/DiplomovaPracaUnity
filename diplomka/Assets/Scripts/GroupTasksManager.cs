@@ -8,7 +8,8 @@ public class GroupTasksManager : MonoBehaviour
 {
     public Text headline;
     public GridLayoutGroup layout;
-    public Button groupStudentsButton;
+    public Button studentsButton;
+    public Image tasksImage;
     public Button prefabItem;
     public Button back;
     public Canvas canvas;
@@ -27,41 +28,42 @@ public class GroupTasksManager : MonoBehaviour
     
     private HashSet<Taskk> _delFromGroup = new ();
     private HashSet<Taskk> _addToGroup = new ();
-    private string sceneName = "GroupTasks";
+    private const string SceneName = "GroupTasks";
 
     private void Start()
     {
         var width = canvas.GetComponent<RectTransform>().rect.width;
-        var width3 = (width - 120) / 3;
+        var width3 = (width - 140) / 3;
         layout.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width3, width3+80);
         
-        float width2 = (width - 100) / 2;
+        float width2 = (width - 120) / 2;
         tasksInGroupList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
         tasksNotInGroupList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
         
-        prefabItem.transform.Find("Edit").GetComponent<Image>().sprite = Constants.xSprite;
+        prefabItem.transform.Find("Edit").transform.Find("Image").GetComponent<Image>().sprite = Constants.xSprite;
+        tasksImage.sprite = Constants.taskSprite;
         
         var group = Constants.Group;
         var tasks = APIHelper.GetGroupsTasks(Constants.Group.id);
         AddTasksToGrid(tasks);
         headline.text = group.name;
         
-        back.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassGroups"));
-        groupStudentsButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/GroupStudents"));
+        back.onClick.AddListener(() => SceneManager.LoadScene(Constants.LastSceneName));
+        studentsButton.onClick.AddListener(() => SceneManager.LoadScene("GroupStudents"));
         closeDeletePanel.onClick.AddListener(() => deletePanel.SetActive(false));
         deletePanel.GetComponent<Button>().onClick.AddListener(() => deletePanel.SetActive(false));
 
         confirmDelete.onClick.AddListener(() =>
         {
             APIHelper.DeleteGroupTask(Constants.Group.id, Constants.Taskk.id);
-            Constants.mySceneManager.Reload(sceneName);
+            Constants.mySceneManager.Reload(SceneName);
         });
         
         addTasks.onClick.AddListener(SetActiveTasksPanel);
 
         saveButton.onClick.AddListener(() => {
             ManageTasks();
-            Constants.mySceneManager.Reload(sceneName);
+            Constants.mySceneManager.Reload(SceneName);
         });
         
         closeTasksPanel.onClick.AddListener(() => tasksPanel.SetActive(false));
@@ -75,8 +77,8 @@ public class GroupTasksManager : MonoBehaviour
             s.onClick.AddListener(() => 
             {
                 Constants.Taskk = task;
-                Constants.LastSceneName = sceneName;
-                SceneManager.LoadScene("Scenes/Task"); //TODO zobraz progres, riesenie ulohy ziaka
+                //Constants.LastSceneName = SceneName;
+                SceneManager.LoadScene("Task"); //TODO zobraz progres, riesenie ulohy skupiny
             });
             var edit = s.transform.Find("Edit").GetComponent<Button>();
             edit.onClick.AddListener(() =>
@@ -90,7 +92,6 @@ public class GroupTasksManager : MonoBehaviour
     }
     private void SetActiveTasksPanel() {
         foreach (Transform child in tasksInGroupList.transform) Destroy(child.gameObject);
-
         foreach (Transform child in tasksNotInGroupList.transform) Destroy(child.gameObject);
         
         tasksPanel.SetActive(true);

@@ -19,6 +19,7 @@ public static class Constants
     public const string GroupTaskEndpointUrl = ServerUrl + "/GroupsTasks";
 
     public const string StudentsEndpointUrl = ServerUrl + "/Students";
+    public const string StudentGetByLoginEndpointUrl = ServerUrl + "/Students/getByLogin";
     public const string StudentsGetByClassroomIdEndpointUrl = ServerUrl + "/Students/getByClassroomId";
     public const string StudentsGetByGroupIdEndpointUrl = ServerUrl + "/Students/getByGroupId";
     public const string StudentsGetByClassroomIdNotInGroupIdEndpointUrl = ServerUrl + "/Students/getByClassroomIdNotInGroupId";
@@ -72,6 +73,24 @@ public static class Constants
     public static readonly string WrongGroupNameFormatMessage = GetWrongFormatMassage(MinimalGroupNameLength);
     public static readonly string WrongTaskNameFormatMessage = GetWrongFormatMassage(MinimalTaskNameLength);
     public const string WrongUserNameOrPasswordMessage = "Nesprávny login alebo heslo!";
+    
+    public const string NameInputFieldText = "Meno";
+    public const string LastNameInputFieldText = "Prezvisko";
+    public const string UserNameInputFieldText = "Používateľské meno";
+    public const string PasswordNameInputFieldText = "Heslo";
+    public const string EmailInputFieldText = "Email";
+    public const string NewPasswordInputFieldText = "Nové heslo";
+    public const string ClassroomNameInputFieldText = "Názov triedy";
+    public const string GroupNameInputFieldText = "Názov skupiny";
+    public const string TaskNameInputFieldText = "Názov úlohy";
+    
+    public const string a = "Prihlásenie";
+    public const string aa = "Registrácia";
+    public const string aaa = "Zabudli ste heslo?";
+    public const string aaaaa = "Nemáte ešte účet?";
+    public const string aaaaaa = "Prihlásiť sa";
+    public const string aaaaaaa = "Odoslať";
+    public const string aaaaaaaa = "Nemáte ešte účet?"; //TODO zmenit vsetok text vo je v apke na toto
 
     public static string LastSceneName = "First";
 
@@ -117,9 +136,14 @@ public static class Constants
 
     public static Sprite GetSprite(string path) {return Resources.Load<Sprite>(path);}
 
-    public static Sprite xSprite =  Resources.Load <Sprite>("Sprites/close");
-    public static Sprite dotsSprite =  Resources.Load <Sprite>("Sprites/more");
-    public static Sprite plusSprite =  Resources.Load <Sprite>("Sprites/plus");
+    public static readonly Sprite xSprite =  Resources.Load <Sprite>("Sprites/close");
+    public static readonly Sprite dotsSprite =  Resources.Load <Sprite>("Sprites/more");
+    public static readonly Sprite plusSprite =  Resources.Load <Sprite>("Sprites/plus");
+    public static readonly Sprite groupSprite =  Resources.Load <Sprite>("Sprites/groupHighlighted");
+    public static readonly Sprite studentsSprite =  Resources.Load <Sprite>("Sprites/studentsHighlighted");
+    public static readonly Sprite taskSprite =  Resources.Load <Sprite>("Sprites/taskHighlighted");
+    public static readonly Sprite showSprite =  Resources.Load <Sprite>("Sprites/show");
+    public static readonly Sprite hideSprite =  Resources.Load <Sprite>("Sprites/hide");
     
     public static EmailSender emailSender = new EmailSender();
     public static MySceneManager mySceneManager = new MySceneManager();

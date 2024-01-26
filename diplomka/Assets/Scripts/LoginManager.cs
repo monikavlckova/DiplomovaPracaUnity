@@ -17,7 +17,7 @@ public class LoginManager : MonoBehaviour
     public InputField userName;
     public InputField password;
     
-    private string sceneName = "Login";
+    private const string SceneName = "Login";
     private void Start()
     {
         loginButton.onClick.AddListener(() => 
@@ -25,24 +25,18 @@ public class LoginManager : MonoBehaviour
             var teacher = APIHelper.GetTeacherByLogin(userName.text, password.text);
             if(!AreValidValues(teacher)) return;
             Constants.User = teacher;
-            SceneManager.LoadScene("Scenes/Classes");
+            SceneManager.LoadScene("Classes");
         });
         
-        back.onClick.AddListener(() => {
-            SceneManager.LoadScene("Scenes/First"); 
-        });
+        back.onClick.AddListener(() => SceneManager.LoadScene("First"));
         
-        signupButton.onClick.AddListener(() => {
-            SceneManager.LoadScene("Scenes/Signup"); 
-        });
+        signupButton.onClick.AddListener(() => SceneManager.LoadScene("Signup"));
         
         closeForgottenPasswordPanel.onClick.AddListener(CloseForgottenPasswordPanel);
 
         forgottenPasswordPanel.GetComponent<Button>().onClick.AddListener(CloseForgottenPasswordPanel);
 
-        forgottenPasswordButton.onClick.AddListener(() => {
-            forgottenPasswordPanel.SetActive(true);
-        });
+        forgottenPasswordButton.onClick.AddListener(() => forgottenPasswordPanel.SetActive(true));
         
         sendNewPasswordButton.onClick.AddListener(() =>
         {

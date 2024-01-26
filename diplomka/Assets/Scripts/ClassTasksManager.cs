@@ -13,8 +13,9 @@ public class ClassTasksManager : MonoBehaviour
     public Button backButton;
     public Button addTask;
     
-    public Button classStudentsButton;
-    public Button classGroupsButton;
+    public Button studentsButton;
+    public Button groupsButton;
+    public Image tasksImage;
     
     public GameObject editPanel;
     public Button closeEditPanel;
@@ -27,28 +28,26 @@ public class ClassTasksManager : MonoBehaviour
     
     private Taskk _delEditTaskk;
     private bool _creatingNew;
-    private string sceneName = "ClassTasks";
-    
+    private const string SceneName = "ClassTasks";
+
 
     private void Start()
     {
         float width = canvas.GetComponent<RectTransform>().rect.width;
-        float width3 = (width - 120) / 3;
+        float width3 = (width - 140) / 3;
         tasksLayout.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width3, width3+80);
         
-        prefabItem.transform.Find("Edit").GetComponent<Image>().sprite = Constants.dotsSprite;
+        prefabItem.transform.Find("Edit").transform.Find("Image").GetComponent<Image>().sprite = Constants.dotsSprite;
+        tasksImage.sprite = Constants.taskSprite;
 
         var tasks = APIHelper.GetTasksInClassroom(Constants.Classroom.id);
         AddTasksToGrid(tasks);
         var classroom = Constants.Classroom;
         className.text = classroom.name;
         
-        backButton.onClick.AddListener(() => {
-            SceneManager.LoadScene("Scenes/Classes"); 
-        });
-
-        classStudentsButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassStudents"));
-        classGroupsButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassGroups"));
+        backButton.onClick.AddListener(() => SceneManager.LoadScene("Classes"));
+        studentsButton.onClick.AddListener(() => SceneManager.LoadScene("ClassStudents"));
+        groupsButton.onClick.AddListener(() => SceneManager.LoadScene("ClassGroups"));
         
         addTask.onClick.AddListener(() => {
             _creatingNew = true;
@@ -61,44 +60,29 @@ public class ClassTasksManager : MonoBehaviour
             editPanel.SetActive(false);
             //TODO zobraz panel na vytvaranie a upravu ulohy
         });
-        
-        
-        closeEditPanel.onClick.AddListener(() => {
-            editPanel.SetActive(false);
-        });
-        
-        editPanel.GetComponent<Button>().onClick.AddListener(() => {
-            editPanel.SetActive(false);
-        });
-        
+
         deleteButton.onClick.AddListener(() =>
         {
             _delEditTaskk = Constants.Taskk;
             deletePanel.SetActive(true);
             deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = Constants.GetDeleteTaskString(_delEditTaskk);
         });
-        
-        closeDeletePanel.onClick.AddListener(() => {
-            deletePanel.SetActive(false);
-        });
-        
-        deletePanel.GetComponent<Button>().onClick.AddListener(() => {
-            deletePanel.SetActive(false);
-        });
-        
+
         confirmDelete.onClick.AddListener(() =>
         {
             APIHelper.DeleteTask(Constants.Taskk.id);
-            Constants.mySceneManager.Reload(sceneName);
+            Constants.mySceneManager.Reload(SceneName);
         });
+        
+        closeEditPanel.onClick.AddListener(() => editPanel.SetActive(false));
+        editPanel.GetComponent<Button>().onClick.AddListener(() => editPanel.SetActive(false));
+        closeDeletePanel.onClick.AddListener(() => deletePanel.SetActive(false));
+        deletePanel.GetComponent<Button>().onClick.AddListener(() => deletePanel.SetActive(false));
     }
 
     private void AddTasksToGrid(List<Taskk> list)
     {
-        foreach (var task in list)
-        {
-            AddTaskToGrid(task);
-        }
+        foreach (var task in list) AddTaskToGrid(task);
     }
 
     private void AddTaskToGrid(Taskk taskk)
@@ -106,8 +90,8 @@ public class ClassTasksManager : MonoBehaviour
         var t = Instantiate(prefabItem, tasksLayout.transform);
         t.onClick.AddListener(() => {
             Constants.Taskk = taskk;
-            Constants.LastSceneName = sceneName;
-            SceneManager.LoadScene("Scenes/Task"); 
+            Constants.LastSceneName = SceneName;
+            SceneManager.LoadScene("Task"); 
         });
         var edit = t.transform.Find("Edit").GetComponent<Button>();
         edit.onClick.AddListener(() =>

@@ -15,12 +15,10 @@ public class SignupManager : MonoBehaviour
     public InputField email;
     public InputField password;
     
-    private string sceneName = "Signup";
+    private const string SceneName = "Signup";
     private void Start()
     {
-        back.onClick.AddListener(() => {
-            SceneManager.LoadScene("Scenes/Login"); 
-        });
+        back.onClick.AddListener(() => SceneManager.LoadScene("Login"));
         
         sendButton.onClick.AddListener(() =>
         {
@@ -37,7 +35,7 @@ public class SignupManager : MonoBehaviour
             var res = APIHelper.CreateUpdateTeacher(teacher);
             Constants.emailSender.SendWelcome(email.text, userName.text);
             Constants.User = JsonConvert.DeserializeObject<Teacher>(res);
-            SceneManager.LoadScene("Scenes/Classes");
+            SceneManager.LoadScene("Classes");
         });
     }
 

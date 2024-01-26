@@ -16,8 +16,9 @@ public class ClassStudentsManager : MonoBehaviour
     public Button backButton;
     public Button addStudent;
     
-    public Button classTasksButton;
-    public Button classGroupsButton;
+    public Button tasksButton;
+    public Button groupsButton;
+    public Image studentsImage;
     
     public GameObject editPanel;
     public Button closeEditPanel;
@@ -39,35 +40,30 @@ public class ClassStudentsManager : MonoBehaviour
     
     private Student _delEditStudent;
     private bool _creatingNew;
-    private List<Classroom> classrooms;
-    private string sceneName = "ClassStudents";
-    
+    private List<Classroom> _classrooms;
+    private const string SceneName = "ClassStudents";
+
     private void Start()
     {
         float width = canvas.GetComponent<RectTransform>().rect.width;
-        float width3 = (width - 120) / 3;
+        float width3 = (width - 140) / 3;
         studentsLayout.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width3, width3+80);
         
-        prefabItem.transform.Find("Edit").GetComponent<Image>().sprite = Constants.dotsSprite;
+        prefabItem.transform.Find("Edit").transform.Find("Image").GetComponent<Image>().sprite = Constants.dotsSprite;
+        studentsImage.sprite = Constants.studentsSprite;
         
         var students = APIHelper.GetStudentsInClassroom(Constants.Classroom.id);
         AddStudentsToGrid(students);
         var classroom = Constants.Classroom;
         className.text = classroom.name;
         
-        classrooms = APIHelper.GetTeachersClassrooms(Constants.User.id);
+        _classrooms = APIHelper.GetTeachersClassrooms(Constants.User.id);
         dropdown.options.Clear();
-        foreach (var c in classrooms)
-        {
-            dropdown.options.Add(new TMP_Dropdown.OptionData() {text=c.name});
-        }
-
-        backButton.onClick.AddListener(() => {
-            SceneManager.LoadScene("Scenes/Classes"); 
-        });
-
-        classTasksButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassTasks"));
-        classGroupsButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassGroups"));
+        foreach (var c in _classrooms) dropdown.options.Add(new TMP_Dropdown.OptionData() {text=c.name});
+        
+        backButton.onClick.AddListener(() => SceneManager.LoadScene("Classes"));
+        tasksButton.onClick.AddListener(() => SceneManager.LoadScene("ClassTasks"));
+        groupsButton.onClick.AddListener(() => SceneManager.LoadScene("ClassGroups"));
         
         addStudent.onClick.AddListener(() => {
             _creatingNew = true;
@@ -109,62 +105,42 @@ public class ClassStudentsManager : MonoBehaviour
             var method = "PUT";
             if (_creatingNew == false)
             {
-                student.classroomId = classrooms[dropdown.value].id;
+                student.classroomId = _classrooms[dropdown.value].id;
                 student.id = Constants.Student.id;
                 method = "POST";
             }
 
-            if (classrooms[dropdown.value].id != Constants.Classroom.id)
-            {
-                DeleteStudentFromGroups(Constants.Student.id);
-            }
+            if (_classrooms[dropdown.value].id != Constants.Classroom.id) DeleteStudentFromGroups(Constants.Student.id);
 
             APIHelper.CreateUpdateStudent(student, method);
-            Constants.mySceneManager.Reload(sceneName);
-        });
-        
-        closeStudentPanel.onClick.AddListener(() => {
-            studentPanel.SetActive(false);
-        });
-        
-        closeEditPanel.onClick.AddListener(() => {
-            editPanel.SetActive(false);
-        });
-        
-        editPanel.GetComponent<Button>().onClick.AddListener(() => {
-            editPanel.SetActive(false);
+            Constants.mySceneManager.Reload(SceneName);
         });
         
         deleteButton.onClick.AddListener(() =>
         {
-            //_delEditStudent = APIHelper.GetStudent(Constants.StudentId);
             _delEditStudent = Constants.Student;
             deletePanel.SetActive(true);
             editPanel.SetActive(false);
             deletePanel.transform.Find("Panel").transform.Find("Text").GetComponent<Text>().text = Constants.GetDeleteStudentString(_delEditStudent);
         });
         
-        closeDeletePanel.onClick.AddListener(() => {
-            deletePanel.SetActive(false);
-        });
-
-        deletePanel.GetComponent<Button>().onClick.AddListener(() => {
-            deletePanel.SetActive(false);
-        });
-
         confirmDelete.onClick.AddListener(() =>
         {
             APIHelper.DeleteStudent(Constants.Student.id);
-            Constants.mySceneManager.Reload(sceneName);
+            Constants.mySceneManager.Reload(SceneName);
         });
+        
+        closeStudentPanel.onClick.AddListener(() => studentPanel.SetActive(false));
+        closeEditPanel.onClick.AddListener(() => editPanel.SetActive(false));
+        editPanel.GetComponent<Button>().onClick.AddListener(() => editPanel.SetActive(false));
+        closeDeletePanel.onClick.AddListener(() => deletePanel.SetActive(false));
+        deletePanel.GetComponent<Button>().onClick.AddListener(() => deletePanel.SetActive(false));
+        
     }
     
     private void AddStudentsToGrid(List<Student> list)
     {
-        foreach (var student in list)
-        {
-            AddStudentToGrid(student);
-        }
+        foreach (var student in list) AddStudentToGrid(student);
     }
 
     private void AddStudentToGrid(Student student)
@@ -173,8 +149,8 @@ public class ClassStudentsManager : MonoBehaviour
         if (student.imagePath is not null) { s.transform.Find("Image").GetComponent<Image>().sprite = Constants.GetSprite(student.imagePath); }
         s.onClick.AddListener(() => {
             Constants.Student = student;
-            Constants.LastSceneName = sceneName;
-            SceneManager.LoadScene("Scenes/StudentTasks"); 
+            Constants.LastSceneName = SceneName;
+            SceneManager.LoadScene("StudentTasks"); 
         });
         var edit = s.transform.Find("Edit").GetComponent<Button>();
         edit.onClick.AddListener(() =>
@@ -188,21 +164,16 @@ public class ClassStudentsManager : MonoBehaviour
 
     private int GetStudentCurrentClassroomIndexInList()
     {
-        for (var i = 0; i < classrooms.Count; i++)
-        {
-            if (classrooms[i].id == _delEditStudent.classroomId) return i;
-        }
-        Debug.Log(String.Format("Nenašila sa trieda s id {0}", _delEditStudent.classroomId));
+        for (var i = 0; i < _classrooms.Count; i++) if (_classrooms[i].id == _delEditStudent.classroomId) return i;
+        
+        Debug.Log(String.Format("Nenašla sa trieda s id {0}", _delEditStudent.classroomId));
         return -1;
     }
 
     private void DeleteStudentFromGroups(int studentId)
     {
         var groups = APIHelper.GetStudentsGroups(studentId);
-        foreach (var group in groups)
-        {
-            APIHelper.DeleteStudentGroup(studentId, group.id);
-        }
+        foreach (var group in groups) APIHelper.DeleteStudentGroup(studentId, group.id);
     }
     
     private bool AreValidValues()

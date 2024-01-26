@@ -8,7 +8,8 @@ public class GroupStudentsManager : MonoBehaviour
 {
     public Text headline;
     public GridLayoutGroup layout;
-    public Button groupTasksButton;
+    public Button tasksButton;
+    public Image studentsImage;
     public Button prefabItem;
     public Button back;
     public Canvas canvas;
@@ -27,41 +28,42 @@ public class GroupStudentsManager : MonoBehaviour
     
     private HashSet<Student> _delFromGroup = new ();
     private HashSet<Student> _addToGroup = new ();
-    private string sceneName = "GroupStudents";
+    private const string SceneName = "GroupStudents";
 
     private void Start()
     {
         var width = canvas.GetComponent<RectTransform>().rect.width;
-        var width3 = (width - 120) / 3;
+        var width3 = (width - 140) / 3;
         layout.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width3, width3+80);
         
-        float width2 = (width - 100) / 2;
+        var width2 = (width - 120) / 2;
         studentsInGroupList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
         studentsNotInGroupList.GetComponent<GridLayoutGroup>().cellSize = new Vector2(width2, 80);
 
-        prefabItem.transform.Find("Edit").GetComponent<Image>().sprite = Constants.xSprite;
+        prefabItem.transform.Find("Edit").transform.Find("Image").GetComponent<Image>().sprite = Constants.xSprite;
+        studentsImage.sprite = Constants.studentsSprite;
         
         var group = Constants.Group;
         var students = APIHelper.GetStudentsInGroup(Constants.Group.id);
         AddStudentsToGrid(students);
         headline.text = group.name;
         
-        back.onClick.AddListener(() => SceneManager.LoadScene("Scenes/ClassGroups"));
-        groupTasksButton.onClick.AddListener(() => SceneManager.LoadScene("Scenes/GroupTasks"));
+        back.onClick.AddListener(() => SceneManager.LoadScene(Constants.LastSceneName));
+        tasksButton.onClick.AddListener(() => SceneManager.LoadScene("GroupTasks"));
         closeDeletePanel.onClick.AddListener(() => deletePanel.SetActive(false));
         deletePanel.GetComponent<Button>().onClick.AddListener(() => deletePanel.SetActive(false));
 
         confirmDelete.onClick.AddListener(() =>
         {
-            APIHelper.DeleteStudentGroup(Constants.Student.id, Constants.Group.id);
-            Constants.mySceneManager.Reload(sceneName);
+            APIHelper.DeleteStudentGroup(Constants.Student.id, Constants.Group.id);     
+            Constants.mySceneManager.Reload(SceneName);
         });
         
         addStudents.onClick.AddListener(SetActiveStudentsPanel);
         
         saveButton.onClick.AddListener(() => {
             ManageStudents();
-            Constants.mySceneManager.Reload(sceneName);
+            Constants.mySceneManager.Reload(SceneName);
         });
         
         closeStudentsPanel.onClick.AddListener(() => studentsPanel.SetActive(false));
@@ -75,8 +77,8 @@ public class GroupStudentsManager : MonoBehaviour
             s.onClick.AddListener(() => 
             {
                 Constants.Student = student;
-                Constants.LastSceneName = sceneName;
-                SceneManager.LoadScene("Scenes/StudentTasks"); 
+                //Constants.LastSceneName = SceneName;
+                SceneManager.LoadScene("StudentTasks"); 
             });
             var edit = s.transform.Find("Edit").GetComponent<Button>();
             edit.onClick.AddListener(() =>
@@ -91,7 +93,6 @@ public class GroupStudentsManager : MonoBehaviour
     
     private void SetActiveStudentsPanel() {
         foreach (Transform child in studentsInGroupList.transform) Destroy(child.gameObject);
-
         foreach (Transform child in studentsNotInGroupList.transform) Destroy(child.gameObject);
         
         studentsPanel.SetActive(true);
@@ -112,8 +113,7 @@ public class GroupStudentsManager : MonoBehaviour
         var addedInGroup = isInGroup;
         var studentItem = Instantiate(prefabStudentListItem, grid.transform);
         studentItem.transform.Find("Text").GetComponent<Text>().text  = (student.name + " " + student.lastName);
-        if (isInGroup) studentItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = Constants.xSprite;
-        else studentItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = Constants.plusSprite;
+        studentItem.transform.Find("Close").transform.Find("Image").GetComponent<Image>().sprite = isInGroup ? Constants.xSprite : Constants.plusSprite;
         
         studentItem.transform.Find("Close").GetComponent<Button>().onClick.AddListener(() => {
             //Constants.Student = student;
@@ -138,9 +138,9 @@ public class GroupStudentsManager : MonoBehaviour
     private void ResizeStudentGroupLists() {
         var height = 95*((studentsInGroupList.transform.childCount + 1) / 2)-15;
         var height2 = 95*((studentsNotInGroupList.transform.childCount + 1) / 2)-15;
-        RectTransform rt = studentsInGroupList.GetComponent<RectTransform>();
+        var rt = studentsInGroupList.GetComponent<RectTransform>();
         rt.sizeDelta = new Vector2 (rt.sizeDelta.x, height);
-        RectTransform rt2 = studentsNotInGroupList.GetComponent<RectTransform>();
+        var rt2 = studentsNotInGroupList.GetComponent<RectTransform>();
         rt2.sizeDelta = new Vector2 (rt2.sizeDelta.x, height2);
     }
     

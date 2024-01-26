@@ -1,13 +1,10 @@
-﻿using System;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class ProfileManager : MonoBehaviour
 {
-    
     public Button back;
     public Button save;
     public Button edit;
@@ -26,23 +23,22 @@ public class ProfileManager : MonoBehaviour
     
     public GameObject changePasswordPanel;
     public InputField password1;
+    public Button password1show;
     public InputField password2;
+    public Button password2show;
     public Button closeEditPanel;
     public Button saveChangedPassword;
     
-    private string sceneName = "Profile";
+    private const string SceneName = "Profile";
 
     private void Start()
     {
-        //var teacher = APIHelper.GetTeacher(Constants.UserId);
         var teacher = Constants.User;
         SetValuesInEditPanel();
 
         name.transform.Find("Text").GetComponent<Text>().text = teacher.name + " " + teacher.lastName;
 
-        back.onClick.AddListener(() => {
-            SceneManager.LoadScene("Scenes/Classes"); 
-        });
+        back.onClick.AddListener(() => SceneManager.LoadScene("Classes"));
         
         save.onClick.AddListener(() =>
         {
@@ -67,26 +63,24 @@ public class ProfileManager : MonoBehaviour
                 save.gameObject.SetActive(true);
             });
         
-        changePassword.onClick.AddListener(() =>
-        {
-            changePasswordPanel.SetActive(true);
-        });
+        changePassword.onClick.AddListener(() => changePasswordPanel.SetActive(true));
 
-        editChangePassword.onClick.AddListener(() =>
-        {
-            changePasswordPanel.SetActive(true);
-        });
+        editChangePassword.onClick.AddListener(() => changePasswordPanel.SetActive(true));
 
-        password1.transform.Find("Show").GetComponent<Button>().onClick.AddListener(() =>
+        password1show.onClick.AddListener(() =>
         {
-            password1.contentType = password1.contentType == InputField.ContentType.Standard ? InputField.ContentType.Password : InputField.ContentType.Standard;
+            var isStandard = password1.contentType == InputField.ContentType.Standard;
+            password1.contentType = isStandard ? InputField.ContentType.Password : InputField.ContentType.Standard;
+            password1show.transform.Find("Image").transform.GetComponent<Image>().sprite = isStandard ? Constants.showSprite : Constants.hideSprite;
             password1.ForceLabelUpdate();
             
         });
         
-        password2.transform.Find("Show").GetComponent<Button>().onClick.AddListener(() =>
+        password2show.onClick.AddListener(() =>
         {
-            password2.contentType = password2.contentType == InputField.ContentType.Standard ? InputField.ContentType.Password : InputField.ContentType.Standard;
+            var isStandard = password2.contentType == InputField.ContentType.Standard;
+            password2.contentType = isStandard ? InputField.ContentType.Password : InputField.ContentType.Standard;
+            password2show.transform.Find("Image").transform.GetComponent<Image>().sprite = isStandard ? Constants.showSprite : Constants.hideSprite;
             password2.ForceLabelUpdate();
         });
         
@@ -207,7 +201,6 @@ public class ProfileManager : MonoBehaviour
             valid = false;
         }
         
-
         return valid;
     }
 }

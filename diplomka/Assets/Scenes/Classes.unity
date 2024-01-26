@@ -369,7 +369,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.18039216, g: 0.38823533, b: 0.3137255, a: 1}
+  m_Color: {r: 0.2627451, g: 0.5254902, b: 0.47843137, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -505,7 +505,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.18062478, g: 0.38679248, b: 0.31513396, a: 0}
+  m_BackGroundColor: {r: 0.2627451, g: 0.5254902, b: 0.47843137, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -724,6 +724,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1663561367}
     m_Modifications:
+    - target: {fileID: 283556800846869060, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Text
+      value: Meno triedy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3180202938279885121, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.9372549
+      objectReference: {fileID: 0}
+    - target: {fileID: 3180202938279885121, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.9372549
+      objectReference: {fileID: 0}
+    - target: {fileID: 3180202938279885121, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.9372549
+      objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943813, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_Color.b
@@ -742,7 +762,7 @@ PrefabInstance:
     - target: {fileID: 3599132361556943818, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_Name
-      value: ClassNameInputField
+      value: ClassName
       objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
@@ -787,7 +807,7 @@ PrefabInstance:
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
@@ -832,7 +852,7 @@ PrefabInstance:
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 230
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 3599132361556943819, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
@@ -854,6 +874,11 @@ PrefabInstance:
       propertyPath: m_Text
       value: "N\xE1zov triedy"
       objectReference: {fileID: 0}
+    - target: {fileID: 6913665783807692220, guid: 39dc4c682832bba479d40d8e2c8ca894,
+        type: 3}
+      propertyPath: m_Name
+      value: ClassNameInputField
+      objectReference: {fileID: 0}
     - target: {fileID: 8030025393523623555, guid: 39dc4c682832bba479d40d8e2c8ca894,
         type: 3}
       propertyPath: m_Text
@@ -869,7 +894,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &960060561 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3599132361556943812, guid: 39dc4c682832bba479d40d8e2c8ca894,
+  m_CorrespondingSourceObject: {fileID: 288552669479312268, guid: 39dc4c682832bba479d40d8e2c8ca894,
     type: 3}
   m_PrefabInstance: {fileID: 960060559}
   m_PrefabAsset: {fileID: 0}
@@ -1325,7 +1350,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -100, y: 400}
+  m_SizeDelta: {x: -100, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1663561368
 MonoBehaviour:
